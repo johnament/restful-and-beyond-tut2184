@@ -47,10 +47,25 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/site</outputDirectory>
+                            <outputDirectory>${basedir}/target/site/deck.js</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/site/assets</directory>
+                                    <directory>src/site/assets/deckjs</directory>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-images</id>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/site/images</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/site/assets/images</directory>
                                 </resource>
                             </resources>
                         </configuration>

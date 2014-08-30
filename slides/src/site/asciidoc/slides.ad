@@ -1,0 +1,47 @@
+= RESTful and Beyond - Building Services from the Ground Up
+John D. Ament
+:backend: html
+:deckjs_theme: sandstone.firefox
+:deckjs_transition: cube
+:navigation:
+:split:
+:status:
+:goto:
+:menu:
+
+== Legal Disclaimer
+
+* The work included in this slide deck and accompanying project is licensed under the Apache V2 License
+* This work is in no way endorsed by my employer and must not be used as any basis for financial decision making.
+
+== About Me
+
+* Apache DeltaSpike PMC
+* Software Architect for Sparta Systems
+
+== About the Presentation
+
+* The content of this presentation can be found on my github site
+https://github.com/johnament/restful-and-beyond-tut2184[https://github.com/johnament/restful-and-beyond-tut2184]
+
+* The slide deck is powered by deck.js, generated using Asciidoctor
+
+== About the Tools
+
+[options="step"]
+* *Java EE* Technologies
+   * JPA
+[options="step"]
+* JBoss Weld (CDI)
+[options="step"]
+* Apache DeltaSpike (CDI Extensions)
+[options="step"]
+* Apache CXF
+[options="step"]
+* JBoss RestEasy
+[options="step"]
+* Jetty
+[options="step"]
+* JBoss Undertow
+[options="step"]
+* Arquillian

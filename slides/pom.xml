@@ -50,7 +50,7 @@
                             <outputDirectory>${basedir}/target/site/deck.js</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/site/assets/deckjs</directory>
+                                    <directory>src/site/deckjs</directory>
                                 </resource>
                             </resources>
                         </configuration>
@@ -65,7 +65,7 @@
                             <outputDirectory>${basedir}/target/site/images</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/site/assets/images</directory>
+                                    <directory>src/site/images</directory>
                                 </resource>
                             </resources>
                         </configuration>

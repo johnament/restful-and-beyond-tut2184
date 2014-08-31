@@ -23,10 +23,13 @@
     under the License.
 -->
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>org.apache.deltaspike.slides</groupId>
-    <artifactId>javaone2014-tut2184</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <parent>
+        <groupId>org.apache.deltaspike.presentations</groupId>
+        <artifactId>restful-and-beyond-tut2184</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <artifactId>restful-and-beyond-tut2184-slides</artifactId>
     <packaging>pom</packaging>
 
     <name>Apache DeltaSpike Documentation - Slides TUT2184</name>

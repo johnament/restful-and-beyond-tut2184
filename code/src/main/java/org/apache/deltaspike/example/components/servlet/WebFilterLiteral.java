@@ -25,7 +25,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
 
 /**
- * Created by johnament on 8/30/14.
+ * A literal implementation of WebFilter for programmatic use.
  */
 public class WebFilterLiteral extends AnnotationLiteral<WebFilter> implements WebFilter {
     private WebInitParam[] webInitParams;

@@ -24,7 +24,7 @@ import org.apache.deltaspike.core.api.config.PropertyFileConfig;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
- * Created by johnament on 8/30/14.
+ * A config source that loads the custom properties file
  */
 @ApplicationScoped
 public class ExampleConfigSource implements PropertyFileConfig {

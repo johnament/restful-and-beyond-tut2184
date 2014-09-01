@@ -17,35 +17,18 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.se;
+package org.apache.deltaspike.example.config;
 
-import org.apache.deltaspike.cdise.api.CdiContainer;
-import org.apache.deltaspike.cdise.api.CdiContainerLoader;
+import org.apache.log4j.BasicConfigurator;
 
 import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.CDI;
 
 /**
- * A main class for starting the app.
+ * Configures logger.
  */
 @Vetoed
-public class Startup {
-    public static void main(String[] args) {
-        Startup startup = new Startup();
-        startup.start();
-    }
-
-    public void start() {
-        CdiContainer cdiContainer = CdiContainerLoader.getCdiContainer();
-        cdiContainer.boot();
-        cdiContainer.getContextControl().startContexts();
-
-        registerShutdownHook(cdiContainer);
-
-        CDI.current().getBeanManager().fireEvent(new ApplicationStartupEvent());
-    }
-
-    private void registerShutdownHook(CdiContainer cdiContainer) {
-        Runtime.getRuntime().addShutdownHook(new Thread(cdiContainer::shutdown));
+public class LogSetup {
+    public static void configureLogger() {
+        BasicConfigurator.configure();
     }
 }

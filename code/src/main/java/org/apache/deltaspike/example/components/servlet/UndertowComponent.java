@@ -37,11 +37,16 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebServlet;
 import java.util.Arrays;
 import java.util.EventListener;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * A reusable component for launching undertow instances.
+ */
 @Vetoed
 public class UndertowComponent {
     private int port;
@@ -97,8 +102,12 @@ public class UndertowComponent {
         return fi;
     };
 
-
     public UndertowComponent start() {
+        return start(new HashMap<>());
+    }
+
+
+    public UndertowComponent start(Map<String,Object> servletContextAttributes) {
         List<ListenerInfo> listenerInfoList = listeners.stream().map(Servlets::listener)
                 .collect(Collectors.toList());
 
@@ -115,6 +124,9 @@ public class UndertowComponent {
                 .setContextPath(contextPath)
                 .setDeploymentName(name)
                 .setClassLoader(ClassLoader.getSystemClassLoader());
+        if(servletContextAttributes != null) {
+            servletContextAttributes.forEach(di::addServletContextAttribute);
+        }
         DeploymentManager deploymentManager = Servlets.defaultContainer().addDeployment(di);
         deploymentManager.deploy();
         try {

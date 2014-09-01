@@ -49,7 +49,7 @@
         </plugins>
     </build>
     <properties>
-        <deltaspike.version>1.0.2</deltaspike.version>
+        <deltaspike.version>1.0.3-SNAPSHOT</deltaspike.version>
         <undertow.version>1.1.0.Beta7</undertow.version>
         <resteasy.version>3.0.8.Final</resteasy.version>
         <weld.version>2.2.4.Final</weld.version>
@@ -119,6 +119,21 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-cdi</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>async-http-servlet-3.0</artifactId>
+            <version>${resteasy.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.apache.deltaspike.modules</groupId>
             <artifactId>deltaspike-security-module-api</artifactId>
         </dependency>
@@ -165,6 +180,11 @@
         <dependency>
             <groupId>org.apache.deltaspike.modules</groupId>
             <artifactId>deltaspike-partial-bean-module-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.container</groupId>
@@ -218,6 +238,16 @@
             <artifactId>shrinkwrap-resolver-impl-maven-archive</artifactId>
             <version>${shrinkwrap.resolver.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>1.4.181</version>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
         </dependency>
     </dependencies>
 </project>

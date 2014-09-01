@@ -17,12 +17,14 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests;
+package org.apache.deltaspike.example.tests.servlet;
 
 import org.apache.deltaspike.example.components.servlet.UndertowComponent;
 import org.apache.deltaspike.example.config.ExampleConfigSource;
+import org.apache.deltaspike.example.rest.AdminApplication;
+import org.apache.deltaspike.example.rest.UndertowRestDeployer;
 import org.apache.deltaspike.example.servlet.GreeterServlet;
-import org.apache.deltaspike.example.servlet.UndertowDeployer;
+import org.apache.deltaspike.example.servlet.UndertowServletDeployer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -41,10 +43,10 @@ import java.net.URL;
 import java.util.Arrays;
 
 /**
- * Created by johnament on 8/30/14.
+ * Tests the start up using admin components.
  */
 @RunWith(Arquillian.class)
-public class ContainerStartTest {
+public class AdminContainerStartTest {
     @Deployment
     public static JavaArchive createArchive() {
         String beansXml = "<beans xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"\n" +
@@ -53,28 +55,31 @@ public class ContainerStartTest {
                 "\t\thttp://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd\"\n" +
                 "       bean-discovery-mode=\"all\">\n" +
                 "</beans>";
-
+        String[] gavs = new String[]{"org.apache.deltaspike.core:deltaspike-core-api",
+                "org.apache.deltaspike.core:deltaspike-core-impl",
+                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api",
+                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld"};
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar").addPackage(UndertowComponent.class.getPackage())
-                .addPackage(ExampleConfigSource.class.getPackage()).addPackage(GreeterServlet.class.getPackage())
-                .addAsManifestResource(new StringAsset(beansXml),"beans.xml");
+                .addPackage(ExampleConfigSource.class.getPackage())
+                .addPackage(AdminApplication.class.getPackage())
+                .addAsManifestResource(new StringAsset(beansXml), "beans.xml");
         Arrays.stream(Maven.resolver().loadPomFromFile("pom.xml")
-                .resolve("org.apache.deltaspike.core:deltaspike-core-api","org.apache.deltaspike.core:deltaspike-core-impl")
+                .resolve(gavs)
                 .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
-
         return jar;
     }
 
     @Inject
-    private UndertowDeployer deployer;
+    private UndertowRestDeployer deployer;
 
     @Test
     public void testCreate() throws Exception{
         deployer.startUndertow(null);
-        URL url = new URL("http://localhost:8989/greet");
+        URL url = new URL("http://localhost:8990/admin");
         try(InputStream is = url.openStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String text = br.readLine();
-            Assert.assertEquals("written",text);
+            Assert.assertEquals("admin",text);
             br.close();
         }
     }

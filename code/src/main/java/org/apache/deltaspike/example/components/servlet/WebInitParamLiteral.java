@@ -23,7 +23,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.servlet.annotation.WebInitParam;
 
 /**
- * Created by johnament on 8/30/14.
+ * A literal implementation of WebInitParam for programmatic use.
  */
 public class WebInitParamLiteral extends AnnotationLiteral<WebInitParam> implements WebInitParam {
     private String name;

@@ -24,7 +24,7 @@ import javax.servlet.annotation.WebInitParam;
 import javax.servlet.annotation.WebServlet;
 
 /**
- * Created by johnament on 8/30/14.
+ * A literal implement of WebServlet for programmatic use.
  */
 public class WebServletLiteral extends AnnotationLiteral<WebServlet> implements WebServlet {
     private String name;
@@ -71,21 +71,21 @@ public class WebServletLiteral extends AnnotationLiteral<WebServlet> implements 
 
     @Override
     public String smallIcon() {
-        return null;
+        return "";
     }
 
     @Override
     public String largeIcon() {
-        return null;
+        return "";
     }
 
     @Override
     public String description() {
-        return null;
+        return "";
     }
 
     @Override
     public String displayName() {
-        return null;
+        return name;
     }
 }

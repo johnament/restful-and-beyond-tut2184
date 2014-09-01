@@ -22,7 +22,7 @@ package org.apache.deltaspike.example.se;
 import javax.enterprise.inject.Vetoed;
 
 /**
- * Created by johnament on 8/30/14.
+ * An event that is fired on start up.  Components may listen to this event to start up on boot.
  */
 @Vetoed
 public class ApplicationStartupEvent {

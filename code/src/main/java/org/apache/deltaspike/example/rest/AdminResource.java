@@ -17,25 +17,22 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.servlet;
+package org.apache.deltaspike.example.rest;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.enterprise.context.RequestScoped;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 /**
- * A basic greeting servlet
+ * Basic rest resource for admin calls.
  */
-@WebServlet(urlPatterns={"/greet"},name = "Greeter")
-public class GreeterServlet extends HttpServlet {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter out = resp.getWriter();
-        out.write("written");
-        out.close();
+@Path("/admin")
+@RequestScoped
+public class AdminResource {
+    @GET
+    @Produces("text/plain")
+    public String doGet() {
+        return "admin";
     }
 }

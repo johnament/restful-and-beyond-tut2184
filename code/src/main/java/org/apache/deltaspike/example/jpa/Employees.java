@@ -17,35 +17,49 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.se;
+package org.apache.deltaspike.example.jpa;
 
-import org.apache.deltaspike.cdise.api.CdiContainer;
-import org.apache.deltaspike.cdise.api.CdiContainerLoader;
-
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.CDI;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
- * A main class for starting the app.
+ * JPA Entity for employees.
  */
-@Vetoed
-public class Startup {
-    public static void main(String[] args) {
-        Startup startup = new Startup();
-        startup.start();
+@Entity
+@Table(name="employees")
+public class Employees {
+    @Id
+    @GeneratedValue
+    private int id;
+    @Column(name="first_name")
+    private String firstName;
+    @Column(name="last_name")
+    private String lastName;
+
+    public int getId() {
+        return id;
     }
 
-    public void start() {
-        CdiContainer cdiContainer = CdiContainerLoader.getCdiContainer();
-        cdiContainer.boot();
-        cdiContainer.getContextControl().startContexts();
-
-        registerShutdownHook(cdiContainer);
-
-        CDI.current().getBeanManager().fireEvent(new ApplicationStartupEvent());
+    public void setId(int id) {
+        this.id = id;
     }
 
-    private void registerShutdownHook(CdiContainer cdiContainer) {
-        Runtime.getRuntime().addShutdownHook(new Thread(cdiContainer::shutdown));
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 }

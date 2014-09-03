@@ -36,12 +36,10 @@ public class RequestScopedServletRequestListener implements ServletRequestListen
     private static final String CDI_REQ_CONTEXT = "cdiRequestContext";
 
     @Override
-    public void requestDestroyed(ServletRequestEvent servletRequestEvent)
+    public void requestDestroyed(ServletRequestEvent e)
     {
         LOG.log(Level.FINER,"Request done.");
-        ContextControl contextControl = (ContextControl)servletRequestEvent.getServletRequest()
-                .getAttribute(CDI_REQ_CONTEXT);
-        contextControl.stopContext(RequestScoped.class);
+        ((ContextControl)e.getServletRequest().getAttribute("cdiRequestContext")).stopContext(RequestScoped.class);
     }
 
     @Override

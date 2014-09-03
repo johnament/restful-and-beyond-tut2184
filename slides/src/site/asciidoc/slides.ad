@@ -1,47 +1,99 @@
 = RESTful and Beyond - Building Services from the Ground Up
 John D. Ament
-:backend: html
-:deckjs_theme: sandstone.firefox
-:deckjs_transition: cube
-:navigation:
-:split:
-:status:
-:goto:
-:menu:
+:backend: dzslides
+:dzslides-style: tomorrow
+:dzslides-transition: horizontal-slide
+:dzslides-fonts: family=Yanone+Kaffeesatz:400,700,200,300&family=Cedarville+Cursive
+:dzslides-highlight: tomorrow-night-bright
 
-== Legal Disclaimer
+[.topic.title]
+== Restful and beyond
 
-* The work included in this slide deck and accompanying project is licensed under the Apache V2 License
-* This work is in no way endorsed by my employer and must not be used as any basis for financial decision making.
+[.topic.intro]
+== Intro
+[.incremental]
+* Learn about microservices
+* Build using Java EE technologies in SE
 
-== About Me
+== *About Me*
 
 * Apache DeltaSpike PMC
-* Software Architect for Sparta Systems
+* Software Architect @ Sparta Systems
+* CDI 2.0 Expert Group Member
 
-== About the Presentation
+image::ds-logo.png[height=100]
 
-* The content of this presentation can be found on my github site
-https://github.com/johnament/restful-and-beyond-tut2184[https://github.com/johnament/restful-and-beyond-tut2184]
+* Twitter @JohnAment
 
-* The slide deck is powered by deck.js, generated using Asciidoctor
-
-== About the Tools
-
-[options="step"]
+== The Technologies
+[.incremental]
 * *Java EE* Technologies
-   * JPA
-[options="step"]
+* Hibernate (JPA)
 * JBoss Weld (CDI)
-[options="step"]
 * Apache DeltaSpike (CDI Extensions)
-[options="step"]
-* Apache CXF
-[options="step"]
-* JBoss RestEasy
-[options="step"]
-* Jetty
-[options="step"]
-* JBoss Undertow
-[options="step"]
+* Apache CXF (JAX-WS)
+* JBoss RestEasy (JAX-RS)
+* JBoss Undertow (Servlet & WebSocket)
 * Arquillian
+
+== Container Control
+
+[.statement]
+* The ability to start a CDI container regardless of what impelementation you are using
+
+[.topic.source]
+== Startup.java
+
+[source,java]
+--
+@Vetoed
+public class Startup {
+    public static void main(String[] args) {
+        Startup startup = new Startup();
+        startup.start();
+    }
+
+    public void start() {
+        CdiContainer cdiContainer = CdiContainerLoader.getCdiContainer();
+        cdiContainer.boot();
+        cdiContainer.getContextControl().startContexts();
+
+        registerShutdownHook(cdiContainer);
+
+        CDI.current().getBeanManager().fireEvent(new ApplicationStartupEvent());
+    }
+
+    private void registerShutdownHook(CdiContainer cdiContainer) {
+        Runtime.getRuntime().addShutdownHook(new Thread(cdiContainer::shutdown));
+    }
+}
+--
+
+== Context Control
+
+[.statement]
+* The ability to start and stop contexts on demand
+
+[.topic.source]
+== RequestScopedServletRequestListener.java
+
+[source,java]
+--
+public class CDIRequestListener implements ServletRequestListener {
+    @Override
+    public void requestDestroyed(ServletRequestEvent e) {
+        ((ContextControl)e.getServletRequest().getAttribute("cdiRequestContext")).stopContext(RequestScoped.class);
+    }
+
+    @Override
+    public void requestInitialized(ServletRequestEvent e) {
+        ContextControl contextControl = CDI.current().select(ContextControl.class).get();
+        e.getServletRequest().setAttribute("cdiRequestContext", contextControl);
+        contextControl.startContext(RequestScoped.class);
+    }
+}
+--
+
+[.topic.ending]
+== Thank you!
+

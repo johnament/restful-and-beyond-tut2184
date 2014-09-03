@@ -28,6 +28,7 @@ import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.FilterInfo;
 import io.undertow.servlet.api.ListenerInfo;
 import io.undertow.servlet.api.ServletInfo;
+import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 
 import javax.enterprise.inject.Vetoed;
 import javax.servlet.Filter;
@@ -36,6 +37,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebServlet;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
@@ -56,6 +58,7 @@ public class UndertowComponent {
     private Map<WebServlet,Class<? extends Servlet>> servlets;
     private Map<WebFilter,Class<? extends Filter>> filters;
     private List<Class<? extends EventListener>> listeners;
+    private Class<?> websocketEndpointClass;
 
     private Undertow server;
 
@@ -84,6 +87,11 @@ public class UndertowComponent {
         return this;
     }
 
+    public UndertowComponent setWebSocketEndpoint(Class<?> clazz) {
+        this.websocketEndpointClass = clazz;
+        return this;
+    }
+
     private static Function<Map.Entry<WebServlet,Class<? extends Servlet>>,ServletInfo> servletInfoFunction =
             webServletClassEntry -> {
         WebServlet ws = webServletClassEntry.getKey();
@@ -103,7 +111,7 @@ public class UndertowComponent {
     };
 
     public UndertowComponent start() {
-        return start(new HashMap<>());
+        return start(Collections.EMPTY_MAP);
     }
 
 
@@ -124,6 +132,12 @@ public class UndertowComponent {
                 .setContextPath(contextPath)
                 .setDeploymentName(name)
                 .setClassLoader(ClassLoader.getSystemClassLoader());
+        if(this.websocketEndpointClass != null) {
+            di.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
+                    new WebSocketDeploymentInfo()
+                            .addEndpoint(websocketEndpointClass)
+            );
+        }
         if(servletContextAttributes != null) {
             servletContextAttributes.forEach(di::addServletContextAttribute);
         }

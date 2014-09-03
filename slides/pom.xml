@@ -40,42 +40,6 @@
         <defaultGoal>clean site</defaultGoal>
         <plugins>
             <plugin>
-                <artifactId>maven-resources-plugin</artifactId>
-                <version>2.6</version>
-                <executions>
-                    <execution>
-                        <id>copy-build-script</id>
-                        <phase>site</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/site/deck.js</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/site/deckjs</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-images</id>
-                        <phase>site</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/site/images</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/site/images</directory>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.asciidoctor</groupId>
                 <artifactId>asciidoctor-maven-plugin</artifactId>
                 <version>${asciidoctor.version}</version>
@@ -90,8 +54,8 @@
                             <sourceDirectory>src/site/asciidoc</sourceDirectory>
                             <headerFooter>true</headerFooter>
                             <sourceHighlighter>coderay</sourceHighlighter>
-                            <backend>deckjs</backend>
-                            <templateDir>src/site/templates/deckjs</templateDir>
+                            <backend>dzslides</backend>
+                            <templateDir>src/site/templates/dzslides</templateDir>
                             <attributes>
                                 <toc>true</toc>
                                 <linkcss>false</linkcss>

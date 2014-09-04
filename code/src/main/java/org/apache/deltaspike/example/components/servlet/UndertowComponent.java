@@ -28,7 +28,18 @@ import io.undertow.servlet.api.DeploymentManager;
 import io.undertow.servlet.api.FilterInfo;
 import io.undertow.servlet.api.ListenerInfo;
 import io.undertow.servlet.api.ServletInfo;
+import io.undertow.servlet.api.ThreadSetupAction;
+import io.undertow.servlet.core.CompositeThreadSetupAction;
+import io.undertow.servlet.util.DefaultClassIntrospector;
+import io.undertow.websockets.jsr.ServerWebSocketContainer;
+import io.undertow.websockets.jsr.UndertowContainerProvider;
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
+import org.xnio.ByteBufferSlicePool;
+import org.xnio.OptionMap;
+import org.xnio.Options;
+import org.xnio.Pool;
+import org.xnio.Xnio;
+import org.xnio.XnioWorker;
 
 import javax.enterprise.inject.Vetoed;
 import javax.servlet.Filter;
@@ -36,6 +47,9 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebServlet;
+import javax.websocket.WebSocketContainer;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EventListener;
@@ -126,6 +140,7 @@ public class UndertowComponent {
                 .collect(Collectors.toList());
 
         DeploymentInfo di = new DeploymentInfo()
+                .setClassIntrospecter(new CDIClassIntrospecter())
                 .addListeners(listenerInfoList)
                 .addFilters(filterInfoList)
                 .addServlets(servletInfoList)
@@ -138,6 +153,17 @@ public class UndertowComponent {
                             .addEndpoint(websocketEndpointClass)
             );
         }
+        XnioWorker worker = null;
+        try {
+            worker = Xnio.getInstance().createWorker(OptionMap.create(Options.THREAD_DAEMON, true));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Pool<ByteBuffer> buffers = new ByteBufferSlicePool(1024, 10240);
+        WebSocketContainer container = new ServerWebSocketContainer(new CDIClassIntrospecter(),
+                UndertowContainerProvider.class.getClassLoader(),
+                worker, buffers, new CompositeThreadSetupAction(Collections.<ThreadSetupAction>emptyList()), false);
+        UndertowContainerProvider.addContainer(Thread.currentThread().getContextClassLoader(),container);
         if(servletContextAttributes != null) {
             servletContextAttributes.forEach(di::addServletContextAttribute);
         }

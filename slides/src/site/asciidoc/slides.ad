@@ -73,6 +73,7 @@ public class Startup {
 
 [.statement]
 * The ability to start and stop contexts on demand
+* Useful in a filter here, to start a context dynamically.
 
 [.topic.source]
 == RequestScopedServletRequestListener.java
@@ -82,15 +83,46 @@ public class Startup {
 public class CDIRequestListener implements ServletRequestListener {
     @Override
     public void requestDestroyed(ServletRequestEvent e) {
-        ((ContextControl)e.getServletRequest().getAttribute("cdiRequestContext")).stopContext(RequestScoped.class);
+        ((ContextControl)e.getServletRequest().getAttribute("rctx")).stopContext(RequestScoped.class);
     }
 
     @Override
     public void requestInitialized(ServletRequestEvent e) {
         ContextControl contextControl = CDI.current().select(ContextControl.class).get();
-        e.getServletRequest().setAttribute("cdiRequestContext", contextControl);
+        e.getServletRequest().setAttribute("rctx", contextControl);
         contextControl.startContext(RequestScoped.class);
     }
+}
+--
+
+== Extra Usecases
+
+[.statement]
+* You can also write an interceptor to start contexts on demand, based on method invocation.
+* Excellent for WebSockets, which don't start Requests on demand
+
+[.topic.source]
+== RequestScopeInteceptor.java
+
+[source,java]
+--
+@AroundInvoke
+public Object startRequestScope(final InvocationContext ctx) throws Exception {
+    Object result = null;
+    ContextControl contextControl = null;
+    if(!isRequestScopeActive()) {
+        contextControl = CDI.current().select(ContextControl.class).get();
+        contextControl.startContext(RequestScoped.class);
+    }
+    try {
+        result = ctx.proceed();
+    }
+    finally {
+        if(contextControl != null) {
+            contextControl.stopContext(RequestScoped.class);
+        }
+    }
+    return result;
 }
 --
 

@@ -20,10 +20,14 @@
 package org.apache.deltaspike.example.tests.websocket;
 
 import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
+import org.apache.deltaspike.example.components.interceptor.RequestScopeInterceptor;
 import org.apache.deltaspike.example.components.servlet.UndertowComponent;
 import org.apache.deltaspike.example.components.websocket.FooClient;
 import org.apache.deltaspike.example.components.websocket.FooServer;
 import org.apache.deltaspike.example.config.ExampleConfigSource;
+import org.apache.deltaspike.example.delegate.Invoker;
+import org.apache.deltaspike.example.delegate.RequestInvoker;
 import org.apache.deltaspike.example.rest.AdminApplication;
 import org.apache.deltaspike.example.websocket.WebSocketDeployer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -36,6 +40,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
+import javax.websocket.ContainerProvider;
+import javax.websocket.DeploymentException;
+import javax.websocket.Session;
+import javax.websocket.WebSocketContainer;
+import java.io.IOException;
+import java.net.URI;
 import java.util.Arrays;
 
 /**
@@ -60,15 +70,18 @@ public class WebSocketTest {
                 .addPackage(AdminApplication.class.getPackage())
                 .addPackage(FooServer.class.getPackage())
                 .addPackage(WebSocketDeployer.class.getPackage())
-                .addAsManifestResource(new StringAsset(beansXml), "beans.xml");
+                .addPackage(UndertowComponent.class.getPackage())
+                .addClasses(StartsRequestScope.class, RequestScopeInterceptor.class, Invoker.class, RequestInvoker.class)
+                .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
+                ;
         Arrays.stream(Maven.resolver().loadPomFromFile("pom.xml")
                 .resolve(gavs)
                 .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+//        jar.addAsManifestResource(new StringAsset("org.apache.deltaspike.example.tests.websocket.CDIWebSocketContainerProvider"),
+//                "services/javax.websocket.ContainerProvider");
+        System.out.println("jar "+jar.toString(true));
         return jar;
     }
-
-    @Inject
-    private FooClient client;
 
     @Inject
     @ConfigProperty(name="undertow.rest.bind.port")
@@ -80,10 +93,17 @@ public class WebSocketTest {
     @Test
     public void testCreateConnection() throws Exception {
         deployer.startUndertow(null);
-        client.connect("ws://localhost:"+undertowBindPort+"/fooSocket");
+        Session session = this.connect("ws://localhost:" + undertowBindPort + "/fooSocket");
+        System.out.println("The client "+getClass()+" connected with session id "+session.getId());
         for(int i = 0;i<5;i++) {
-            client.send("fim "+i);
+            session.getBasicRemote().sendText("fim "+i);
         }
         Thread.sleep(2*1000);
+    }
+
+    public Session connect(String uri) throws IOException, DeploymentException {
+        WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
+        URI endpointURI = URI.create(uri);
+        return webSocketContainer.connectToServer(FooClient.class,endpointURI);
     }
 }

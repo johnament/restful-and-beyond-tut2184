@@ -17,33 +17,21 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.components.websocket;
+package org.apache.deltaspike.example.components.servlet;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
-import javax.websocket.ClientEndpoint;
-import javax.websocket.OnMessage;
-import javax.websocket.Session;
-import java.io.IOException;
+import io.undertow.servlet.api.InstanceFactory;
+import io.undertow.servlet.api.InstanceHandle;
 
 /**
  * Created by johnament on 9/3/14.
  */
-@ApplicationScoped
-@ClientEndpoint
-public class FooClient {
-
-    @PostConstruct
-    public void init(){
-        System.out.println("Created client.");
+public class CDIInstanceFactory<T> implements InstanceFactory<T> {
+    private Class<T> aClass;
+    public CDIInstanceFactory(Class<T> aClass) {
+        this.aClass = aClass;
     }
-
-    public void send(String data, Session session) throws IOException {
-        session.getBasicRemote().sendText(data);
-    }
-
-    @OnMessage
-    public void receive(String data) {
-        System.out.println("Client received "+data);
+    @Override
+    public InstanceHandle<T> createInstance() throws InstantiationException {
+        return new CDIInstanceHandle<>(aClass);
     }
 }

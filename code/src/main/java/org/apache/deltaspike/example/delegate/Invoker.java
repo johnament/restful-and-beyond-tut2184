@@ -17,43 +17,21 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.components.websocket;
+package org.apache.deltaspike.example.delegate;
 
 import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
-import org.apache.deltaspike.example.delegate.RequestInvoker;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.CDI;
-import javax.websocket.OnMessage;
-import javax.websocket.Session;
-import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 
 /**
  * Created by johnament on 9/3/14.
  */
 @ApplicationScoped
-@ServerEndpoint("/fooSocket")
-public class FooServer {
-    @PostConstruct
-    public void init() {
-        System.out.println("Created server...");
-    }
-    @OnMessage
+public class Invoker {
     @StartsRequestScope
-    public void respond(String data, Session session) {
-        System.out.println("Received "+data);
-        try {
-            System.out.println("In app scoped.");
-            CDI.current().select(RequestInvoker.class).get().inRequestScope();
-            session.getBasicRemote().sendText("foo");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void doRequestinvoker() {
+        System.out.println("In app scoped.");
+        CDI.current().select(RequestInvoker.class).get().inRequestScope();
     }
 }

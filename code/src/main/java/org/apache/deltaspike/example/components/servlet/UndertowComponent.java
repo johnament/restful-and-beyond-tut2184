@@ -42,6 +42,7 @@ import org.xnio.Xnio;
 import org.xnio.XnioWorker;
 
 import javax.enterprise.inject.Vetoed;
+import javax.enterprise.inject.spi.CDI;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -138,9 +139,9 @@ public class UndertowComponent {
 
         List<FilterInfo> filterInfoList = filters.entrySet().stream().map(filterInfoFunction)
                 .collect(Collectors.toList());
-
+        CDIClassIntrospecter introspecter = CDI.current().select(CDIClassIntrospecter.class).get();
         DeploymentInfo di = new DeploymentInfo()
-                .setClassIntrospecter(new CDIClassIntrospecter())
+                .setClassIntrospecter(introspecter)
                 .addListeners(listenerInfoList)
                 .addFilters(filterInfoList)
                 .addServlets(servletInfoList)
@@ -160,7 +161,7 @@ public class UndertowComponent {
             e.printStackTrace();
         }
         Pool<ByteBuffer> buffers = new ByteBufferSlicePool(1024, 10240);
-        WebSocketContainer container = new ServerWebSocketContainer(new CDIClassIntrospecter(),
+        WebSocketContainer container = new ServerWebSocketContainer(introspecter,
                 UndertowContainerProvider.class.getClassLoader(),
                 worker, buffers, new CompositeThreadSetupAction(Collections.<ThreadSetupAction>emptyList()), false);
         UndertowContainerProvider.addContainer(Thread.currentThread().getContextClassLoader(),container);

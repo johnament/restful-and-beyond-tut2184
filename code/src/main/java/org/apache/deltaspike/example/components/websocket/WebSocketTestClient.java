@@ -19,19 +19,30 @@
 
 package org.apache.deltaspike.example.components.websocket;
 
+import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import java.io.IOException;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by johnament on 9/3/14.
  */
 @ApplicationScoped
 @ClientEndpoint
-public class FooClient {
+public class WebSocketTestClient {
+
+    @Inject
+    private BeanManager beanManager;
+
+    private CountDownLatch countDownLatch = new CountDownLatch(5);
 
     @PostConstruct
     public void init(){
@@ -43,7 +54,14 @@ public class FooClient {
     }
 
     @OnMessage
+    @StartsRequestScope
     public void receive(String data) {
         System.out.println("Client received "+data);
+        beanManager.getContext(RequestScoped.class);
+        countDownLatch.countDown();
+    }
+
+    public void verify() throws Exception {
+        countDownLatch.await();
     }
 }

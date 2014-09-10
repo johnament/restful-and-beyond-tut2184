@@ -22,9 +22,12 @@ package org.apache.deltaspike.example.components.servlet;
 import io.undertow.servlet.api.ClassIntrospecter;
 import io.undertow.servlet.api.InstanceFactory;
 
+import javax.enterprise.context.ApplicationScoped;
+
 /**
  * Created by johnament on 9/3/14.
  */
+@ApplicationScoped
 public class CDIClassIntrospecter implements ClassIntrospecter {
     @Override
     public <T> InstanceFactory<T> createInstanceFactory(Class<T> aClass) throws NoSuchMethodException {

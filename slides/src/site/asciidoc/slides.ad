@@ -6,24 +6,23 @@ John D. Ament
 :dzslides-fonts: family=Yanone+Kaffeesatz:400,700,200,300&family=Cedarville+Cursive
 :dzslides-highlight: tomorrow-night-bright
 
-[.topic.title]
-== Restful and beyond
-
 [.topic.intro]
 == Intro
 [.incremental]
-* Learn about microservices
+* Learn about microservices, deploying light weight applications
 * Build using Java EE technologies in SE
+* Leverage Apache DeltaSpike to build CDI based applications
 
-== *About Me*
+== About Me
 
 * Apache DeltaSpike PMC
 * Software Architect @ Sparta Systems
 * CDI 2.0 Expert Group Member
-
-image::ds-logo.png[height=100]
-
 * Twitter @JohnAment
+
+|===
+| image:ds-logo.png[DeltaSpikeLogo, 200] | *real graphic pending*
+|===
 
 == The Technologies
 [.incremental]
@@ -38,7 +37,6 @@ image::ds-logo.png[height=100]
 
 == Container Control
 
-[.statement]
 * The ability to start a CDI container regardless of what impelementation you are using
 
 [.topic.source]
@@ -71,7 +69,6 @@ public class Startup {
 
 == Context Control
 
-[.statement]
 * The ability to start and stop contexts on demand
 * Useful in a filter here, to start a context dynamically.
 
@@ -97,7 +94,6 @@ public class CDIRequestListener implements ServletRequestListener {
 
 == Extra Usecases
 
-[.statement]
 * You can also write an interceptor to start contexts on demand, based on method invocation.
 * Excellent for WebSockets, which don't start Requests on demand
 
@@ -125,6 +121,126 @@ public Object startRequestScope(final InvocationContext ctx) throws Exception {
     return result;
 }
 --
+
+== WebSockets Integration
+
+[middle.right.incremental]
+* WebSockets JSR has limited CDI integration
+** Most work is *platform specific*
+* No active contexts when methods are invoked
+** Similar to MDBs
+* Poor instance creation integration
+
+[.topic.source]
+== UndertowCDISupport.java
+
+[source,java]
+--
+public class CDIClassIntrospecter implements ClassIntrospecter {
+    public <T> InstanceFactory<T> createInstanceFactory(Class<T> aClass) throws NoSuchMethodException {
+        return new CDIInstanceFactory<>(aClass);
+    }
+}
+
+public class CDIInstanceFactory<T> implements InstanceFactory<T> {
+    private Class<T> aClass;
+    public CDIInstanceFactory(Class<T> aClass) {
+        this.aClass = aClass;
+    }
+    public InstanceHandle<T> createInstance() throws InstantiationException {
+        return new CDIInstanceHandle<>(aClass);
+    }
+}
+
+public class CDIInstanceHandle<T> implements InstanceHandle<T> {
+    private T instance;
+    public CDIInstanceHandle(Class<T> aClass) {
+        this.instance = CDI.current().select(aClass).get();
+    }
+    public T getInstance() {
+        return instance;
+    }
+    public void release() { }
+}
+--
+
+== WebSocket Enhancement
+
+* Without these changes, instances of WebSockets (and Servlet) are managed by Undertow
+* These factory classes replace how instances are resolved, leveraging scopes to manage scoping of instances
+
+[.topic.source]
+== ResponderServer.java
+
+[source,java]
+--
+@ApplicationScoped
+@ServerEndpoint("/serverSocket")
+public class ResponderServer {
+    @PostConstruct
+    public void init() {
+        System.out.println("Created server...");
+    }
+    @OnMessage
+    @StartsRequestScope
+    public void respond(String data, Session session) {
+        System.out.println("Received "+data);
+        try {
+            CDI.current().select(RequestInvoker.class).get().inRequestScope();
+            session.getBasicRemote().sendText("foo");
+
+        } catch (Exception e) { }
+    }
+}
+--
+
+== WebSocket Enhancement
+
+* This also works for clients
+* Retrieving the instance via CDI, end up with a single per client program
+
+[.topic.source]
+== WebSocketTestClient.java
+
+[source,java]
+--
+public Session connect(String uri) throws IOException, DeploymentException {
+    WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
+    URI endpointURI = URI.create(uri);
+    return webSocketContainer.connectToServer(WebSocketTestClient.class,endpointURI);
+}
+
+public void send(String data, Session session) throws IOException {
+    session.getBasicRemote().sendText(data);
+}
+--
+
+== Security Integration
+
+* Interceptor based security
+* Annotation based bindings
+* Method based injection of dependencies
+
+[.topic.source]
+== Team1Authorizer.java
+
+[source,java]
+--
+@RequestScoped
+public class Team1Authorizer {
+    @Secures
+    @Team1Binding
+    public boolean isAuthorizedForTeam1(InvocationContext invocationContext,
+            User user) {
+        return user.getGroups().stream().anyMatch("team1"::equalsIgnoreCase);
+    }
+}
+--
+
+== !
+* Interceptor is invoked before the method is invoked.
+* If it returns false, or throws an exception, the method is not invoked
+* Typical approach is to bind the logged in user to a RequestScoped bean
 
 [.topic.ending]
 == Thank you!

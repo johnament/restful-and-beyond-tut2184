@@ -34,8 +34,8 @@ import java.io.IOException;
  * Created by johnament on 9/3/14.
  */
 @ApplicationScoped
-@ServerEndpoint("/fooSocket")
-public class FooServer {
+@ServerEndpoint("/serverSocket")
+public class ResponderServer {
     @PostConstruct
     public void init() {
         System.out.println("Created server...");
@@ -43,17 +43,11 @@ public class FooServer {
     @OnMessage
     @StartsRequestScope
     public void respond(String data, Session session) {
-        System.out.println("Received "+data);
+        System.out.println("Server Received "+data);
         try {
-            System.out.println("In app scoped.");
             CDI.current().select(RequestInvoker.class).get().inRequestScope();
-            session.getBasicRemote().sendText("foo");
+            session.getBasicRemote().sendText("foo "+data);
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { }
     }
 }

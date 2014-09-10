@@ -21,7 +21,7 @@ package org.apache.deltaspike.example.websocket;
 
 import org.apache.deltaspike.core.api.config.ConfigProperty;
 import org.apache.deltaspike.example.components.servlet.UndertowComponent;
-import org.apache.deltaspike.example.components.websocket.FooServer;
+import org.apache.deltaspike.example.components.websocket.ResponderServer;
 import org.apache.deltaspike.example.se.ApplicationStartupEvent;
 
 import javax.annotation.PreDestroy;
@@ -54,8 +54,9 @@ public class WebSocketDeployer {
 
     public void startUndertow(@Observes ApplicationStartupEvent applicationStartupEvent) {
         undertowComponent = new UndertowComponent(undertowBindPort,undertowBindAddress,contextRoot,deploymentName)
-                .setWebSocketEndpoint(FooServer.class).start();
+                .setWebSocketEndpoint(ResponderServer.class).start();
     }
+
 
     @PreDestroy
     public void shutdown() {

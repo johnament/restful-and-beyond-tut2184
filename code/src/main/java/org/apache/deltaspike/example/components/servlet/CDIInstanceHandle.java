@@ -21,11 +21,13 @@ package org.apache.deltaspike.example.components.servlet;
 
 import io.undertow.servlet.api.InstanceHandle;
 
+import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.CDI;
 
 /**
  * Created by johnament on 9/3/14.
  */
+@Vetoed
 public class CDIInstanceHandle<T> implements InstanceHandle<T> {
     private Class<T> aClass;
     private T instance;
@@ -35,7 +37,6 @@ public class CDIInstanceHandle<T> implements InstanceHandle<T> {
     }
     @Override
     public T getInstance() {
-        System.out.println("Looking up "+aClass+" via CDI.");
         return instance;
     }
 

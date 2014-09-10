@@ -22,9 +22,12 @@ package org.apache.deltaspike.example.components.servlet;
 import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.InstanceHandle;
 
+import javax.enterprise.inject.Vetoed;
+
 /**
  * Created by johnament on 9/3/14.
  */
+@Vetoed
 public class CDIInstanceFactory<T> implements InstanceFactory<T> {
     private Class<T> aClass;
     public CDIInstanceFactory(Class<T> aClass) {

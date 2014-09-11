@@ -19,24 +19,33 @@
 
 package org.apache.deltaspike.example.tests.persistence;
 
+import org.apache.deltaspike.example.jpa.EmployeeRepository;
 import org.apache.deltaspike.example.jpa.Employees;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import java.util.List;
 
 /**
  * Created by johnament on 9/11/14.
  */
 @Transactional
-public class TransactionBean {
+public class TransactionBean2 {
 
-    public void createEmployee() {
+    @Inject
+    private EmployeeRepository employeeRepository;
+
+    public void createEmployee(String first, String last) {
         Employees e = new Employees();
-        e.setFirstName("Bob");
-        e.setLastName("Hope");
-        EntityManager em = CDI.current().select(EntityManager.class).get();
-        Employees e2 = em.merge(e);
+        e.setFirstName(first);
+        e.setLastName(last);
+        Employees e2 = employeeRepository.save(e);
         System.out.println("Employee id :" + e2.getId());
+    }
+
+    public List<Employees> findAll() {
+        return employeeRepository.findAll();
     }
 }

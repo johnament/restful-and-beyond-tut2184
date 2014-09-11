@@ -295,6 +295,7 @@ public void cleanEM(@Disposes EntityManager entityManager) {
 --
 
 == The Short Way
+[.statement]
 * Inject an `EntityManagerFactory` using `@PersistenceUnitName`
 * DeltaSpike loads all properties in `persistence-UnitName.properties`
 * Provide a producer method for your `EntityManager` and manage the transaction.
@@ -311,7 +312,6 @@ private EntityManagerFactory entityManagerFactory;
 @Produces
 @RequestScoped
 public EntityManager entityManager() {
-    logger.info("Creating an entity manager.");
     EntityManager em = entityManagerFactory.createEntityManager();
     EntityTransaction et = em.getTransaction();
     et.begin();
@@ -319,7 +319,6 @@ public EntityManager entityManager() {
 }
 
 public void cleanEM(@Disposes EntityManager entityManager) {
-    logger.info("Disposing an entity manager "+entityManager);
     EntityTransaction et = entityManager.getTransaction();
     if(et.getRollbackOnly()) {
         et.rollback();
@@ -332,6 +331,7 @@ public void cleanEM(@Disposes EntityManager entityManager) {
 --
 
 == Transaction Management
+[.statement]
 * The other feature in persistence is transaction management
 * Great for running in an application server where you have a `UserTransaction`
 * Supports a `ResourceLocalTransactionStrategy` for use in SE mode
@@ -358,6 +358,13 @@ public void cleanEM(@Disposes EntityManager entityManager) {
     }
 }
 --
+
+== JPA Support
+* Only necessary to provide a producer for your `EntityManager`
+* Everything works out of the box
+
+== Simple Querying Support
+*
 
 [.topic.ending]
 == Thank you!

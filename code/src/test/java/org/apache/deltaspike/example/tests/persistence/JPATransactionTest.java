@@ -73,9 +73,6 @@ public class JPATransactionTest {
 
         jar.delete("META-INF/beans.xml");
         jar.addAsManifestResource(new StringAsset(beansXml), "beans.xml");
-        StringAsset extension = new StringAsset("org.apache.deltaspike.jpa.impl.transaction.context.TransactionContextExtension");
-        jar.addAsManifestResource(extension,"services/javax.enterprise.inject.spi.Extension");
-        System.out.println(jar.toString(true));
         return jar;
     }
 

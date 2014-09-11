@@ -22,7 +22,7 @@ package org.apache.deltaspike.example.tests.websocket;
 import org.apache.deltaspike.core.api.config.ConfigProperty;
 import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
 import org.apache.deltaspike.example.components.interceptor.RequestScopeInterceptor;
-import org.apache.deltaspike.example.components.servlet.UndertowComponent;
+import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.components.websocket.ResponderServer;
 import org.apache.deltaspike.example.components.websocket.WebSocketTestClient;
 import org.apache.deltaspike.example.config.ExampleConfigSource;

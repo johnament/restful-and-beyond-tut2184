@@ -19,12 +19,10 @@
 
 package org.apache.deltaspike.example.tests.servlet;
 
-import org.apache.deltaspike.example.components.servlet.UndertowComponent;
+import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.config.ExampleConfigSource;
 import org.apache.deltaspike.example.rest.AdminApplication;
 import org.apache.deltaspike.example.rest.UndertowRestDeployer;
-import org.apache.deltaspike.example.servlet.GreeterServlet;
-import org.apache.deltaspike.example.servlet.UndertowServletDeployer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;

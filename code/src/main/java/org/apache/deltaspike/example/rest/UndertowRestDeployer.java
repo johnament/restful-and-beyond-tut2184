@@ -21,7 +21,7 @@ package org.apache.deltaspike.example.rest;
 
 import org.apache.deltaspike.core.api.config.ConfigProperty;
 import org.apache.deltaspike.example.components.servlet.RequestScopedServletRequestListener;
-import org.apache.deltaspike.example.components.servlet.UndertowComponent;
+import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.components.servlet.WebServletLiteral;
 import org.apache.deltaspike.example.se.ApplicationStartupEvent;
 import org.jboss.resteasy.cdi.CdiInjectorFactory;

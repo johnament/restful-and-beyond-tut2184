@@ -17,24 +17,20 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.components.servlet;
+package org.apache.deltaspike.example.components.undertow;
 
+import io.undertow.servlet.api.ClassIntrospecter;
 import io.undertow.servlet.api.InstanceFactory;
-import io.undertow.servlet.api.InstanceHandle;
 
-import javax.enterprise.inject.Vetoed;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * Created by johnament on 9/3/14.
  */
-@Vetoed
-public class CDIInstanceFactory<T> implements InstanceFactory<T> {
-    private Class<T> aClass;
-    public CDIInstanceFactory(Class<T> aClass) {
-        this.aClass = aClass;
-    }
+@ApplicationScoped
+public class CDIClassIntrospecter implements ClassIntrospecter {
     @Override
-    public InstanceHandle<T> createInstance() throws InstantiationException {
-        return new CDIInstanceHandle<>(aClass);
+    public <T> InstanceFactory<T> createInstanceFactory(Class<T> aClass) throws NoSuchMethodException {
+        return new CDIInstanceFactory<>(aClass);
     }
 }

@@ -17,31 +17,24 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.components.servlet;
+package org.apache.deltaspike.example.components.undertow;
 
+import io.undertow.servlet.api.InstanceFactory;
 import io.undertow.servlet.api.InstanceHandle;
 
 import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.CDI;
 
 /**
  * Created by johnament on 9/3/14.
  */
 @Vetoed
-public class CDIInstanceHandle<T> implements InstanceHandle<T> {
+public class CDIInstanceFactory<T> implements InstanceFactory<T> {
     private Class<T> aClass;
-    private T instance;
-    public CDIInstanceHandle(Class<T> aClass) {
+    public CDIInstanceFactory(Class<T> aClass) {
         this.aClass = aClass;
-        this.instance = CDI.current().select(aClass).get();
     }
     @Override
-    public T getInstance() {
-        return instance;
-    }
-
-    @Override
-    public void release() {
-
+    public InstanceHandle<T> createInstance() throws InstantiationException {
+        return new CDIInstanceHandle<>(aClass);
     }
 }

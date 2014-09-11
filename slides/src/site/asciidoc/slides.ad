@@ -215,6 +215,11 @@ public void send(String data, Session session) throws IOException {
 }
 --
 
+== Servlet and WebSocket Review
+
+* Use an introspector (Undertow specific) to control instance creation.
+* Override the WebSocket container to 
+
 == Security Integration
 
 * Interceptor based security

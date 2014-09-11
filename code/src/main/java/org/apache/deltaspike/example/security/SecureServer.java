@@ -21,16 +21,13 @@ package org.apache.deltaspike.example.security;
 
 import org.apache.deltaspike.core.api.config.ConfigProperty;
 import org.apache.deltaspike.example.components.servlet.RequestScopedServletRequestListener;
-import org.apache.deltaspike.example.components.servlet.UndertowComponent;
+import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.components.servlet.WebServletLiteral;
-import org.apache.deltaspike.example.rest.AdminApplication;
 import org.apache.deltaspike.example.se.ApplicationStartupEvent;
-import org.apache.deltaspike.example.servlet.GreeterServlet;
 import org.jboss.resteasy.cdi.CdiInjectorFactory;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;

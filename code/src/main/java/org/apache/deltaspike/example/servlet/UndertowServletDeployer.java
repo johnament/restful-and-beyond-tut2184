@@ -20,8 +20,7 @@
 package org.apache.deltaspike.example.servlet;
 
 import org.apache.deltaspike.core.api.config.ConfigProperty;
-import org.apache.deltaspike.core.api.config.ConfigResolver;
-import org.apache.deltaspike.example.components.servlet.UndertowComponent;
+import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.se.ApplicationStartupEvent;
 
 import javax.annotation.PreDestroy;

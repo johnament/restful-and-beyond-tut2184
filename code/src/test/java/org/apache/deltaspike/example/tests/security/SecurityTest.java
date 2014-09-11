@@ -19,8 +19,7 @@
 
 package org.apache.deltaspike.example.tests.security;
 
-import org.apache.deltaspike.core.api.provider.BeanManagerProvider;
-import org.apache.deltaspike.example.components.servlet.UndertowComponent;
+import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.config.ExampleConfigSource;
 import org.apache.deltaspike.example.security.LoginRestFilter;
 import org.apache.deltaspike.example.security.SecureServer;

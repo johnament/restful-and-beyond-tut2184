@@ -19,7 +19,7 @@
 
 package org.apache.deltaspike.example.tests.servlet;
 
-import org.apache.deltaspike.example.components.servlet.UndertowComponent;
+import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.config.ExampleConfigSource;
 import org.apache.deltaspike.example.servlet.GreeterServlet;
 import org.apache.deltaspike.example.servlet.UndertowServletDeployer;

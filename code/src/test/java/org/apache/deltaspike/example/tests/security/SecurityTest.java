@@ -68,7 +68,7 @@ public class SecurityTest {
                 .addPackage(ExampleConfigSource.class.getPackage())
                 .addPackage(LoginRestFilter.class.getPackage())
                 .addAsManifestResource(new StringAsset(beansXml), "beans.xml");
-        Arrays.stream(Maven.resolver().loadPomFromFile("pom.xml")
+        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
                 .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
         return jar;
@@ -97,6 +97,6 @@ public class SecurityTest {
         response.close();
         Assert.assertEquals("200 was expected", 200, response.getStatus());
         Assert.assertEquals("Hello, admin!",entity);
-
+        secureServer.shutdown();
     }
 }

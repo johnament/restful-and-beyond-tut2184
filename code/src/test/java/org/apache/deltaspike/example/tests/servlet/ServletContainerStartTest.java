@@ -57,7 +57,7 @@ public class ServletContainerStartTest {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar").addPackage(UndertowComponent.class.getPackage())
                 .addPackage(ExampleConfigSource.class.getPackage()).addPackage(GreeterServlet.class.getPackage())
                 .addAsManifestResource(new StringAsset(beansXml),"beans.xml");
-        Arrays.stream(Maven.resolver().loadPomFromFile("pom.xml")
+        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve("org.apache.deltaspike.core:deltaspike-core-api","org.apache.deltaspike.core:deltaspike-core-impl")
                 .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
 
@@ -77,5 +77,6 @@ public class ServletContainerStartTest {
             Assert.assertEquals("written",text);
             br.close();
         }
+        deployer.shutdown();
     }
 }

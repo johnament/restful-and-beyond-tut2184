@@ -39,8 +39,8 @@ import java.util.Map;
  * A component for starting and stopping entity managers.
  */
 @ApplicationScoped
-public class EntityManagerProducer {
-    private static final Logger logger = Logger.getLogger(EntityManagerProducer.class);
+public class LongPersistence {
+    private static final Logger logger = Logger.getLogger(LongPersistence.class);
     @Inject
     @ConfigProperty(name = "default.persistence.jdbc.url")
     private String url;

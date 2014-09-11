@@ -17,37 +17,35 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.servlet;
+package org.apache.deltaspike.example.tests.persistence;
 
-import org.apache.deltaspike.example.components.undertow.UndertowComponent;
+import org.apache.deltaspike.cdise.api.ContextControl;
 import org.apache.deltaspike.example.config.ExampleConfigSource;
-import org.apache.deltaspike.example.rest.AdminApplication;
-import org.apache.deltaspike.example.se.ApplicationStartupEvent;
-import org.apache.deltaspike.example.servlet.GreeterServlet;
+import org.apache.deltaspike.example.config.LogSetup;
+import org.apache.deltaspike.example.jpa.Employees;
+import org.apache.deltaspike.example.jpa.ShortPersistence;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.CDI;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
+import javax.persistence.EntityManager;
 import java.util.Arrays;
 
 /**
- * Tests all existing components, using events to decouple.
+ * Tests JPA functionality within the app.
  */
 @RunWith(Arquillian.class)
-public class StartupEventTest {
+public class JPAShortTest {
     @Deployment
     public static JavaArchive createArchive() {
+        LogSetup.configureLogger();
         String beansXml = "<beans xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"\n" +
                 "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                 "       xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee\n" +
@@ -57,36 +55,35 @@ public class StartupEventTest {
 
         String[] gavs = new String[]{"org.apache.deltaspike.core:deltaspike-core-api",
                 "org.apache.deltaspike.core:deltaspike-core-impl",
+                "org.apache.deltaspike.modules:deltaspike-jpa-module-api",
+                "org.apache.deltaspike.modules:deltaspike-jpa-module-impl",
                 "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api",
-                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld"};
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar").addPackage(UndertowComponent.class.getPackage())
+                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld",
+                "org.apache.deltaspike.modules:deltaspike-data-module-api",
+                "org.apache.deltaspike.modules:deltaspike-data-module-impl"};
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar")
                 .addPackage(ExampleConfigSource.class.getPackage())
-                .addPackage(GreeterServlet.class.getPackage())
-                .addPackage(AdminApplication.class.getPackage())
-                .addAsManifestResource(new StringAsset(beansXml), "beans.xml");
+                .addClasses(Employees.class, ShortPersistence.class);
 
         Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
                 .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+
+
+        jar.addAsManifestResource(new StringAsset(beansXml), "beans.xml");
         return jar;
     }
 
     @Test
-    public void testContainersListening() throws Exception {
-        CDI.current().getBeanManager().fireEvent(new ApplicationStartupEvent());
-        testURL("http://localhost:8989/greet","written");
-        testURL("http://localhost:8990/admin", "admin");
+    public void testCreateEmployee() {
+        ContextControl contextControl = CDI.current().select(ContextControl.class).get();
+        contextControl.startContext(RequestScoped.class);
+        Employees e = new Employees();
+        e.setFirstName("Bob");
+        e.setLastName("Hope");
+        EntityManager em = CDI.current().select(EntityManager.class).get();
+        Employees e2 = em.merge(e);
+        System.out.println("Employee id :"+e2.getId());
+        contextControl.stopContext(RequestScoped.class);
     }
-
-    private void testURL(String urlString, String content) throws Exception {
-        URL url = new URL(urlString);
-        try(InputStream is = url.openStream()) {
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String text = br.readLine();
-            Assert.assertEquals(content, text);
-            br.close();
-        }
-
-    }
-
 }

@@ -23,10 +23,10 @@ import org.apache.deltaspike.cdise.api.ContextControl;
 import org.apache.deltaspike.example.config.ExampleConfigSource;
 import org.apache.deltaspike.example.config.LogSetup;
 import org.apache.deltaspike.example.jpa.Employees;
+import org.apache.deltaspike.example.jpa.LongPersistence;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
@@ -36,14 +36,13 @@ import org.junit.runner.RunWith;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.CDI;
 import javax.persistence.EntityManager;
-import java.io.File;
 import java.util.Arrays;
 
 /**
  * Tests JPA functionality within the app.
  */
 @RunWith(Arquillian.class)
-public class JPATest {
+public class JPALongTest {
     @Deployment
     public static JavaArchive createArchive() {
         LogSetup.configureLogger();
@@ -62,9 +61,9 @@ public class JPATest {
                 "org.apache.deltaspike.modules:deltaspike-data-module-impl"};
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar")
                 .addPackage(ExampleConfigSource.class.getPackage())
-                .addPackage(Employees.class.getPackage());
+                .addClasses(Employees.class, LongPersistence.class);
 
-        Arrays.stream(Maven.resolver().loadPomFromFile("pom.xml")
+        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
                 .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
 

@@ -61,7 +61,7 @@ public class AdminContainerStartTest {
                 .addPackage(ExampleConfigSource.class.getPackage())
                 .addPackage(AdminApplication.class.getPackage())
                 .addAsManifestResource(new StringAsset(beansXml), "beans.xml");
-        Arrays.stream(Maven.resolver().loadPomFromFile("pom.xml")
+        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
                 .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
         return jar;
@@ -80,5 +80,6 @@ public class AdminContainerStartTest {
             Assert.assertEquals("admin",text);
             br.close();
         }
+        deployer.shutdown();
     }
 }

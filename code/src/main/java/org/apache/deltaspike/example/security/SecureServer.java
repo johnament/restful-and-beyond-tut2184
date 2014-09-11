@@ -28,6 +28,7 @@ import org.jboss.resteasy.cdi.CdiInjectorFactory;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
 import org.jboss.resteasy.spi.ResteasyDeployment;
 
+import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -78,5 +79,10 @@ public class SecureServer {
         deployment.setApplicationClass(SecureApplication.class.getName());
 
         return deployment;
+    }
+
+    @PreDestroy
+    public void shutdown() {
+        undertowComponent.stop();
     }
 }

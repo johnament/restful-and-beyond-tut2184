@@ -98,6 +98,7 @@ public class WebSocketTest {
             testClient.send("fim "+i,session);
         }
         testClient.verify();
+        deployer.shutdown();
     }
 
     public Session connect(String uri) throws IOException, DeploymentException {

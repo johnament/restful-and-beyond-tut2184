@@ -218,7 +218,7 @@ public void send(String data, Session session) throws IOException {
 == Servlet and WebSocket Review
 
 * Use an introspector (Undertow specific) to control instance creation.
-* Override the WebSocket container to 
+* Override the WebSocket container to
 
 == Security Integration
 
@@ -242,10 +242,122 @@ public class Team1Authorizer {
 }
 --
 
-== !
+== Security Overview
 * Interceptor is invoked before the method is invoked.
 * If it returns false, or throws an exception, the method is not invoked
 * Typical approach is to bind the logged in user to a RequestScoped bean
+
+== Persistence & Data Modules
+* Simplified injection of JPA resources
+* Transaction management
+* Annotation and interface based querying support
+
+== The Long Way
+* Use `ConfigProperty` to specify parameters to load
+* Manually start `EntityManagerFactory`
+* Provide a producer method for your `EntityManager` and manage the transaction.
+
+[.topic.source]
+== LongPersistence.java
+
+[source,java]
+--
+@PostConstruct
+public void init() {
+    Map<String,String> properties = new HashMap<>();
+    properties.put("javax.persistence.jdbc.driver",driver);
+    properties.put("javax.persistence.jdbc.url",url);
+    properties.put("javax.persistence.jdbc.user",user);
+    properties.put("javax.persistence.jdbc.password",password);
+    properties.put("javax.persistence.schema-generation.database.action",schemaGen);
+    entityManagerFactory = Persistence.createEntityManagerFactory("DefaultApp",properties);
+}
+
+@Produces
+@RequestScoped
+public EntityManager entityManager() {
+    EntityManager em = entityManagerFactory.createEntityManager();
+    EntityTransaction et = em.getTransaction();
+    et.begin();
+    return em;
+}
+
+public void cleanEM(@Disposes EntityManager entityManager) {
+    EntityTransaction et = entityManager.getTransaction();
+    if(et.getRollbackOnly()) {
+        et.rollback();
+    }
+    else {
+        et.commit();
+    }
+    entityManager.close();
+}
+--
+
+== The Short Way
+* Inject an `EntityManagerFactory` using `@PersistenceUnitName`
+* DeltaSpike loads all properties in `persistence-UnitName.properties`
+* Provide a producer method for your `EntityManager` and manage the transaction.
+
+[.topic.source]
+== ShortPersistence.java
+
+[source,java]
+--
+@Inject
+@PersistenceUnitName("DefaultApp")
+private EntityManagerFactory entityManagerFactory;
+
+@Produces
+@RequestScoped
+public EntityManager entityManager() {
+    logger.info("Creating an entity manager.");
+    EntityManager em = entityManagerFactory.createEntityManager();
+    EntityTransaction et = em.getTransaction();
+    et.begin();
+    return em;
+}
+
+public void cleanEM(@Disposes EntityManager entityManager) {
+    logger.info("Disposing an entity manager "+entityManager);
+    EntityTransaction et = entityManager.getTransaction();
+    if(et.getRollbackOnly()) {
+        et.rollback();
+    }
+    else {
+        et.commit();
+    }
+    entityManager.close();
+}
+--
+
+== Transaction Management
+* The other feature in persistence is transaction management
+* Great for running in an application server where you have a `UserTransaction`
+* Supports a `ResourceLocalTransactionStrategy` for use in SE mode
+** Other options available for different deployment options
+
+[.topic.source]
+== TransactionPersistence.java
+
+[source,java]
+--
+@Inject
+@PersistenceUnitName("DefaultApp")
+private EntityManagerFactory entityManagerFactory;
+
+@Produces
+@TransactionScoped
+public EntityManager entityManager() {
+    return entityManagerFactory.createEntityManager();
+}
+
+public void cleanEM(@Disposes EntityManager entityManager) {
+    if(entityManager.isOpen()) {
+        entityManager.close();
+    }
+}
+--
 
 [.topic.ending]
 == Thank you!

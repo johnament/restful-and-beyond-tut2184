@@ -13,6 +13,7 @@ John D. Ament
 * Build using Java EE technologies in SE
 * Leverage Apache DeltaSpike to build CDI based applications
 
+[.topic.intro]
 == About Me
 
 * Apache DeltaSpike PMC
@@ -24,6 +25,7 @@ John D. Ament
 | image:ds-logo.png[DeltaSpikeLogo, 200] | *real graphic pending*
 |===
 
+[.topic.intro]
 == The Technologies
 [.incremental]
 * *Java EE* Technologies
@@ -35,6 +37,7 @@ John D. Ament
 * JBoss Undertow (Servlet & WebSocket)
 * Arquillian
 
+[.topic.intro]
 == Container Control
 
 * The ability to start a CDI container regardless of what impelementation you are using
@@ -58,15 +61,18 @@ public class Startup {
 
         registerShutdownHook(cdiContainer);
 
-        CDI.current().getBeanManager().fireEvent(new ApplicationStartupEvent());
+        CDI.current().getBeanManager()
+            .fireEvent(new ApplicationStartupEvent());
     }
 
     private void registerShutdownHook(CdiContainer cdiContainer) {
-        Runtime.getRuntime().addShutdownHook(new Thread(cdiContainer::shutdown));
+        Runtime.getRuntime().addShutdownHook(
+            new Thread(cdiContainer::shutdown));
     }
 }
 --
 
+[.topic.intro]
 == Context Control
 
 * The ability to start and stop contexts on demand
@@ -80,18 +86,22 @@ public class Startup {
 public class CDIRequestListener implements ServletRequestListener {
     @Override
     public void requestDestroyed(ServletRequestEvent e) {
-        ((ContextControl)e.getServletRequest().getAttribute("rctx")).stopContext(RequestScoped.class);
+        ((ContextControl)e.getServletRequest()
+            .getAttribute("rctx"))
+            .stopContext(RequestScoped.class);
     }
 
     @Override
     public void requestInitialized(ServletRequestEvent e) {
-        ContextControl contextControl = CDI.current().select(ContextControl.class).get();
+        ContextControl contextControl = CDI.current()
+            .select(ContextControl.class).get();
         e.getServletRequest().setAttribute("rctx", contextControl);
         contextControl.startContext(RequestScoped.class);
     }
 }
 --
 
+[.topic.intro]
 == Extra Usecases
 
 * You can also write an interceptor to start contexts on demand, based on method invocation.
@@ -107,7 +117,8 @@ public Object startRequestScope(final InvocationContext ctx) throws Exception {
     Object result = null;
     ContextControl contextControl = null;
     if(!isRequestScopeActive()) {
-        contextControl = CDI.current().select(ContextControl.class).get();
+        contextControl = CDI.current()
+            .select(ContextControl.class).get();
         contextControl.startContext(RequestScoped.class);
     }
     try {
@@ -122,6 +133,7 @@ public Object startRequestScope(final InvocationContext ctx) throws Exception {
 }
 --
 
+[.topic.intro]
 == WebSockets Integration
 
 [middle.right.incremental]
@@ -164,6 +176,7 @@ public class CDIInstanceHandle<T> implements InstanceHandle<T> {
 }
 --
 
+[.topic.intro]
 == WebSocket Enhancement
 
 * Without these changes, instances of WebSockets (and Servlet) are managed by Undertow
@@ -177,23 +190,19 @@ public class CDIInstanceHandle<T> implements InstanceHandle<T> {
 @ApplicationScoped
 @ServerEndpoint("/serverSocket")
 public class ResponderServer {
-    @PostConstruct
-    public void init() {
-        System.out.println("Created server...");
-    }
     @OnMessage
     @StartsRequestScope
     public void respond(String data, Session session) {
-        System.out.println("Received "+data);
         try {
-            CDI.current().select(RequestInvoker.class).get().inRequestScope();
+            CDI.current().select(RequestInvoker.class)
+                .get().inRequestScope();
             session.getBasicRemote().sendText("foo");
-
         } catch (Exception e) { }
     }
 }
 --
 
+[.topic.intro]
 == WebSocket Enhancement
 
 * This also works for clients
@@ -205,9 +214,11 @@ public class ResponderServer {
 [source,java]
 --
 public Session connect(String uri) throws IOException, DeploymentException {
-    WebSocketContainer webSocketContainer = ContainerProvider.getWebSocketContainer();
+    WebSocketContainer webSocketContainer =
+        ContainerProvider.getWebSocketContainer();
     URI endpointURI = URI.create(uri);
-    return webSocketContainer.connectToServer(WebSocketTestClient.class,endpointURI);
+    return webSocketContainer
+        .connectToServer(WebSocketTestClient.class,endpointURI);
 }
 
 public void send(String data, Session session) throws IOException {
@@ -215,11 +226,13 @@ public void send(String data, Session session) throws IOException {
 }
 --
 
+[.topic.intro]
 == Servlet and WebSocket Review
 
 * Use an introspector (Undertow specific) to control instance creation.
 * Override the WebSocket container to
 
+[.topic.intro]
 == Security Integration
 
 * Interceptor based security
@@ -235,23 +248,28 @@ public void send(String data, Session session) throws IOException {
 public class Team1Authorizer {
     @Secures
     @Team1Binding
-    public boolean isAuthorizedForTeam1(InvocationContext invocationContext,
-            User user) {
-        return user.getGroups().stream().anyMatch("team1"::equalsIgnoreCase);
+    public boolean isAuthorizedForTeam1(
+        InvocationContext invocationContext,
+        User user) {
+        return user.getGroups().stream()
+            .anyMatch("team1"::equalsIgnoreCase);
     }
 }
 --
 
+[.topic.intro]
 == Security Overview
 * Interceptor is invoked before the method is invoked.
 * If it returns false, or throws an exception, the method is not invoked
 * Typical approach is to bind the logged in user to a RequestScoped bean
 
+[.topic.intro]
 == Persistence & Data Modules
 * Simplified injection of JPA resources
 * Transaction management
 * Annotation and interface based querying support
 
+[.topic.intro]
 == The Long Way
 * Use `ConfigProperty` to specify parameters to load
 * Manually start `EntityManagerFactory`
@@ -272,30 +290,10 @@ public void init() {
     properties.put("javax.persistence.schema-generation.database.action",schemaGen);
     entityManagerFactory = Persistence.createEntityManagerFactory("DefaultApp",properties);
 }
-
-@Produces
-@RequestScoped
-public EntityManager entityManager() {
-    EntityManager em = entityManagerFactory.createEntityManager();
-    EntityTransaction et = em.getTransaction();
-    et.begin();
-    return em;
-}
-
-public void cleanEM(@Disposes EntityManager entityManager) {
-    EntityTransaction et = entityManager.getTransaction();
-    if(et.getRollbackOnly()) {
-        et.rollback();
-    }
-    else {
-        et.commit();
-    }
-    entityManager.close();
-}
 --
 
+[.topic.intro]
 == The Short Way
-[.statement]
 * Inject an `EntityManagerFactory` using `@PersistenceUnitName`
 * DeltaSpike loads all properties in `persistence-UnitName.properties`
 * Provide a producer method for your `EntityManager` and manage the transaction.
@@ -330,11 +328,11 @@ public void cleanEM(@Disposes EntityManager entityManager) {
 }
 --
 
+[.topic.intro]
 == Transaction Management
-[.statement]
 * The other feature in persistence is transaction management
 * Great for running in an application server where you have a `UserTransaction`
-* Supports a `ResourceLocalTransactionStrategy` for use in SE mode
+* Supports Resource Local for use in SE mode by default
 ** Other options available for different deployment options
 
 [.topic.source]
@@ -359,12 +357,25 @@ public void cleanEM(@Disposes EntityManager entityManager) {
 }
 --
 
+[.topic.intro]
 == JPA Support
 * Only necessary to provide a producer for your `EntityManager`
 * Everything works out of the box
 
+[.topic.intro]
 == Simple Querying Support
-*
+* Replaces DAOs
+* Contains a lot of useful built in functionality
+
+[.topic.source]
+== EmployeeRepository.java
+
+[source,java]
+--
+@Repository(forEntity = Employees.class)
+public interface EmployeeRepository extends
+    EntityRepository<Employees,Integer> { }
+--
 
 [.topic.ending]
 == Thank you!

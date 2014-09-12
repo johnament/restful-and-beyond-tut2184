@@ -42,7 +42,7 @@ html, .view body {
 }
 
 body, .view section {
-  background: #ffffff;
+  background: #1D2326;
   font-size: 17px;
   line-height: 1;
   -webkit-box-shadow: 8px 0 6px -3px #8c8c8c;
@@ -64,7 +64,7 @@ section, .view head > title {
 }
 
 .view head > title {
-  color: #FFFFFF;
+  color: #DDDCC5;
   text-align: center;
   margin: .5em 0 .25em;
   line-height: 1;
@@ -81,7 +81,7 @@ section:not(.title) {
 
 section.title h1 {
   font-size: 6em;
-  color: #1D2326;
+  color: #DDDCC5;
   position: relative;
   top: 40%;
   -webkit-transform: translate(0, -50%);
@@ -262,7 +262,7 @@ a {
 section ul {
   list-style: none;
   font-size: 3em;
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
   font-weight: 700;
   color: #4271ae;
   text-align: right;
@@ -488,14 +488,13 @@ section.title footer {
 
 section.source {
   /*background-color: #272822;*/
-  background-color: #000000;
+  background-color: #1D2326;
   padding: 30px !important;
 }
 
 section.source h2 {
   margin: 0 .5em .5em 0;
   color: #DDDCC5;
-  text-transform: uppercase;
   text-align: right;
 }
 
@@ -518,10 +517,9 @@ section pre code {
   background: rgba(255,255,255,.075);
   border: 1px solid rgba(255,255,255,.2);
   margin-bottom: 1em;
+  color:#fff !important;
 }
 
-.middle,
-.statement,
 section.intro > h1,
 section.intro > h2,
 section.recap > hgroup, 
@@ -530,12 +528,21 @@ section > dl,
 section > ul.graffiti,
 section > p {
   position: relative;
-  top: 50%;
+
   -webkit-transform: translate(0, -50%);
   -moz-transform: translate(0, -50%);
   -ms-transform: translate(0, -50%);
   -o-transform: translate(0, -50%);
   transform: translate(0, -50%);
+}
+
+.intro > ul {
+    font-size:40px;
+}
+
+.statement,
+.middle {
+    top: 50%;
 }
 
 section p.statement strong {

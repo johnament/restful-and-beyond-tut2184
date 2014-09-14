@@ -25,17 +25,15 @@ import org.jboss.resteasy.cdi.ResteasyCdiExtension;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.ApplicationPath;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
- * Application component for Admin endpoints.
+ * Created by johnament on 9/13/14.
  */
-@ApplicationPath("/")
 @ApplicationScoped
-public class AdminApplication extends Application{
+@ApplicationPath("/rest")
+public class RestAPI extends Application {
     @Inject
     private ResteasyCdiExtension resteasyCdiExtension;
 
@@ -46,10 +44,7 @@ public class AdminApplication extends Application{
         Set<Class<?>> resultClasses = Sets.newHashSet();
         resultClasses.addAll(classes);
         resteasyCdiExtension.getProviders().forEach(resultClasses::add);
-        resteasyCdiExtension.getResources().stream().filter(r ->{
-            Path p = (Path) r.getAnnotation(Path.class);
-            return p.value().contains("admin");
-        }).forEach(resultClasses::add);
+        resteasyCdiExtension.getResources().forEach(resultClasses::add);
 
         return resultClasses;
     }

@@ -20,9 +20,9 @@
 package org.apache.deltaspike.example.tests.security;
 
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
-import org.apache.deltaspike.example.config.ExampleConfigSource;
+import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.security.LoginRestFilter;
-import org.apache.deltaspike.example.security.SecureServer;
+import org.apache.deltaspike.example.tests.deployers.SecureServer;
 import org.apache.log4j.BasicConfigurator;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -67,7 +67,8 @@ public class SecurityTest {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar").addPackage(UndertowComponent.class.getPackage())
                 .addPackage(ExampleConfigSource.class.getPackage())
                 .addPackage(LoginRestFilter.class.getPackage())
-                .addAsManifestResource(new StringAsset(beansXml), "beans.xml");
+                .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
+                .addClass(SecureServer.class);
         Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
                 .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);

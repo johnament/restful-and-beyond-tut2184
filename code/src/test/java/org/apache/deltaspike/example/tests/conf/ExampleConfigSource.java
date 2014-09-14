@@ -17,7 +17,7 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.config;
+package org.apache.deltaspike.example.tests.conf;
 
 import org.apache.deltaspike.core.api.config.PropertyFileConfig;
 

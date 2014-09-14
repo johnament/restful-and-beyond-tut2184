@@ -17,23 +17,33 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.websocket;
+package org.apache.deltaspike.example.tests.deployers;
 
 import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.apache.deltaspike.example.components.servlet.RequestScopedServletRequestListener;
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
-import org.apache.deltaspike.example.components.websocket.ResponderServer;
+import org.apache.deltaspike.example.components.servlet.WebServletLiteral;
+import org.apache.deltaspike.example.restAdmin.AdminApplication;
 import org.apache.deltaspike.example.se.ApplicationStartupEvent;
+import org.jboss.resteasy.cdi.CdiInjectorFactory;
+import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
+import org.jboss.resteasy.spi.ResteasyDeployment;
 
 import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.servlet.annotation.WebInitParam;
+import javax.servlet.annotation.WebServlet;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Created by johnament on 9/3/14.
+ * Starts undertow with a resteasy configuration.
  */
 @ApplicationScoped
-public class WebSocketDeployer {
+public class UndertowRestDeployer {
     @Inject
     @ConfigProperty(name="undertow.rest.bind.port")
     private Integer undertowBindPort;
@@ -50,13 +60,31 @@ public class WebSocketDeployer {
     @ConfigProperty(name = "undertow.rest.deployment.name")
     private String deploymentName;
 
+    @Inject
+    private ResteasyCdiExtension resteasyCdiExtension;
+
     private UndertowComponent undertowComponent;
 
     public void startUndertow(@Observes ApplicationStartupEvent applicationStartupEvent) {
+        WebServlet resteasyServlet = new WebServletLiteral("RestEasy",new String[]{"/"},
+                new WebInitParam[]{},true,1);
+        Map<String,Object> servletContextParams = new HashMap<>();
+        servletContextParams.put(ResteasyDeployment.class.getName(), createDeployment());
         undertowComponent = new UndertowComponent(undertowBindPort,undertowBindAddress,contextRoot,deploymentName)
-                .setWebSocketEndpoint(ResponderServer.class).start();
+                .addServlet(resteasyServlet,HttpServlet30Dispatcher.class)
+                .addListener(RequestScopedServletRequestListener.class)
+                .start(servletContextParams);
     }
 
+    private ResteasyDeployment createDeployment() {
+
+        ResteasyDeployment deployment = new ResteasyDeployment();
+        deployment.setInjectorFactoryClass(CdiInjectorFactory.class.getName());
+        // by setting the application, we assume the application will list out all resources and providers
+        deployment.setApplicationClass(AdminApplication.class.getName());
+
+        return deployment;
+    }
 
     @PreDestroy
     public void shutdown() {

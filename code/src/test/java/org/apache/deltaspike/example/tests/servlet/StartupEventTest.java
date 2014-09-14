@@ -20,10 +20,12 @@
 package org.apache.deltaspike.example.tests.servlet;
 
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
-import org.apache.deltaspike.example.config.ExampleConfigSource;
-import org.apache.deltaspike.example.rest.AdminApplication;
+import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
+import org.apache.deltaspike.example.restAdmin.AdminApplication;
 import org.apache.deltaspike.example.se.ApplicationStartupEvent;
-import org.apache.deltaspike.example.servlet.GreeterServlet;
+import org.apache.deltaspike.example.tests.deployers.GreeterServlet;
+import org.apache.deltaspike.example.tests.deployers.UndertowRestDeployer;
+import org.apache.deltaspike.example.tests.deployers.UndertowServletDeployer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -61,9 +63,10 @@ public class StartupEventTest {
                 "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld"};
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar").addPackage(UndertowComponent.class.getPackage())
                 .addPackage(ExampleConfigSource.class.getPackage())
-                .addPackage(GreeterServlet.class.getPackage())
+                .addClasses(GreeterServlet.class, UndertowServletDeployer.class, UndertowRestDeployer.class)
                 .addPackage(AdminApplication.class.getPackage())
-                .addAsManifestResource(new StringAsset(beansXml), "beans.xml");
+                .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
+                .addClasses(GreeterServlet.class, UndertowRestDeployer.class, UndertowServletDeployer.class);
 
         Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)

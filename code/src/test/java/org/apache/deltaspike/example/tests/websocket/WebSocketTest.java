@@ -25,11 +25,11 @@ import org.apache.deltaspike.example.components.interceptor.RequestScopeIntercep
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.components.websocket.ResponderServer;
 import org.apache.deltaspike.example.components.websocket.WebSocketTestClient;
-import org.apache.deltaspike.example.config.ExampleConfigSource;
+import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.delegate.Invoker;
 import org.apache.deltaspike.example.delegate.RequestInvoker;
-import org.apache.deltaspike.example.rest.AdminApplication;
-import org.apache.deltaspike.example.websocket.WebSocketDeployer;
+import org.apache.deltaspike.example.restAdmin.AdminApplication;
+import org.apache.deltaspike.example.tests.deployers.WebSocketDeployer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;

@@ -20,7 +20,7 @@
 package org.apache.deltaspike.example.tests.persistence;
 
 import org.apache.deltaspike.cdise.api.ContextControl;
-import org.apache.deltaspike.example.config.ExampleConfigSource;
+import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.config.LogSetup;
 import org.apache.deltaspike.example.jpa.Employees;
 import org.apache.deltaspike.example.jpa.LongPersistence;
@@ -57,6 +57,8 @@ public class JPALongTest {
                 "org.apache.deltaspike.core:deltaspike-core-impl",
                 "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api",
                 "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld",
+                "org.apache.deltaspike.modules:deltaspike-jpa-module-api",
+                "org.apache.deltaspike.modules:deltaspike-jpa-module-impl",
                 "org.apache.deltaspike.modules:deltaspike-data-module-api",
                 "org.apache.deltaspike.modules:deltaspike-data-module-impl"};
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar")

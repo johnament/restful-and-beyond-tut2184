@@ -17,33 +17,20 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.persistence;
+package org.apache.deltaspike.example.mongo;
 
-import org.apache.deltaspike.example.jpa.EmployeeRepository;
-import org.apache.deltaspike.example.jpa.Employees;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.apache.deltaspike.partialbean.api.PartialBeanBinding;
 
-import javax.inject.Inject;
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Created by johnament on 9/11/14.
+ * Created by johnament on 9/12/14.
  */
-@Transactional
-public class TransactionBean2 {
-
-    @Inject
-    private EmployeeRepository employeeRepository;
-
-    public void createEmployee(String first, String last) {
-        Employees e = new Employees();
-        e.setFirstName(first);
-        e.setLastName(last);
-        Employees e2 = employeeRepository.save(e);
-        System.out.println("Employee id :" + e2.getId());
-    }
-
-    public List<Employees> findAll() {
-        return employeeRepository.findAll();
-    }
+@PartialBeanBinding
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface MongoDBRepository {
 }

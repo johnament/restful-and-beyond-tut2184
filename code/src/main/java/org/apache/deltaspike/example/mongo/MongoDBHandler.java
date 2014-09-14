@@ -17,31 +17,20 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.components.undertow;
+package org.apache.deltaspike.example.mongo;
 
-import io.undertow.servlet.api.InstanceHandle;
-
-import javax.enterprise.inject.Vetoed;
-import javax.enterprise.inject.spi.CDI;
+import javax.enterprise.context.Dependent;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 
 /**
- * Created by johnament on 9/3/14.
+ * Created by johnament on 9/12/14.
  */
-@Vetoed
-public class CDIInstanceHandle<T> implements InstanceHandle<T> {
-    private Class<T> aClass;
-    private T instance;
-    public CDIInstanceHandle(Class<T> aClass) {
-        this.aClass = aClass;
-        this.instance = CDI.current().select(aClass).get();
-    }
+@MongoDBRepository
+@Dependent
+public class MongoDBHandler implements InvocationHandler{
     @Override
-    public T getInstance() {
-        return instance;
-    }
-
-    @Override
-    public void release() {
-
+    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        return null;
     }
 }

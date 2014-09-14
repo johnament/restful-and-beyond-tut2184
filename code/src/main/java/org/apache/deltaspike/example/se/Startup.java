@@ -21,6 +21,7 @@ package org.apache.deltaspike.example.se;
 
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
+import org.apache.log4j.BasicConfigurator;
 
 import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.CDI;

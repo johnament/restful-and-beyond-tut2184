@@ -20,9 +20,9 @@
 package org.apache.deltaspike.example.tests.servlet;
 
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
-import org.apache.deltaspike.example.config.ExampleConfigSource;
-import org.apache.deltaspike.example.rest.AdminApplication;
-import org.apache.deltaspike.example.rest.UndertowRestDeployer;
+import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
+import org.apache.deltaspike.example.restAdmin.AdminApplication;
+import org.apache.deltaspike.example.tests.deployers.UndertowRestDeployer;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -60,7 +60,8 @@ public class AdminContainerStartTest {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar").addPackage(UndertowComponent.class.getPackage())
                 .addPackage(ExampleConfigSource.class.getPackage())
                 .addPackage(AdminApplication.class.getPackage())
-                .addAsManifestResource(new StringAsset(beansXml), "beans.xml");
+                .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
+                .addClass(UndertowRestDeployer.class);
         Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
                 .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);

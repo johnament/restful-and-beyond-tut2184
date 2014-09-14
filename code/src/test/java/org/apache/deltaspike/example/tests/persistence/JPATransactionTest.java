@@ -19,7 +19,7 @@
 
 package org.apache.deltaspike.example.tests.persistence;
 
-import org.apache.deltaspike.example.config.ExampleConfigSource;
+import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.config.LogSetup;
 import org.apache.deltaspike.example.jpa.Employees;
 import org.apache.deltaspike.example.jpa.TransactionPersistence;

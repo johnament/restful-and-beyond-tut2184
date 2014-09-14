@@ -21,8 +21,10 @@ package org.apache.deltaspike.example.components.undertow;
 
 import io.undertow.servlet.api.ClassIntrospecter;
 import io.undertow.servlet.api.InstanceFactory;
+import io.undertow.servlet.api.InstanceHandle;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.CDI;
 
 /**
  * Created by johnament on 9/3/14.
@@ -32,5 +34,34 @@ public class CDIClassIntrospecter implements ClassIntrospecter {
     @Override
     public <T> InstanceFactory<T> createInstanceFactory(Class<T> aClass) throws NoSuchMethodException {
         return new CDIInstanceFactory<>(aClass);
+    }
+
+    private static class CDIInstanceFactory<T> implements InstanceFactory<T> {
+        private Class<T> aClass;
+        public CDIInstanceFactory(Class<T> aClass) {
+            this.aClass = aClass;
+        }
+        @Override
+        public InstanceHandle<T> createInstance() throws InstantiationException {
+            return new CDIInstanceHandle<>(aClass);
+        }
+    }
+
+    private static class CDIInstanceHandle<T> implements InstanceHandle<T> {
+        private Class<T> aClass;
+        private T instance;
+        public CDIInstanceHandle(Class<T> aClass) {
+            this.aClass = aClass;
+            this.instance = CDI.current().select(aClass).get();
+        }
+        @Override
+        public T getInstance() {
+            return instance;
+        }
+
+        @Override
+        public void release() {
+
+        }
     }
 }

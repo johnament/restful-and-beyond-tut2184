@@ -17,7 +17,7 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.servlet;
+package org.apache.deltaspike.example.tests.deployers;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;

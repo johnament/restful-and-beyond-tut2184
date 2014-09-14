@@ -19,7 +19,7 @@
 
 package org.apache.deltaspike.example.tests.persistence;
 
-import org.apache.deltaspike.example.config.ExampleConfigSource;
+import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.config.LogSetup;
 import org.apache.deltaspike.example.jpa.EmployeeRepository;
 import org.apache.deltaspike.example.jpa.Employees;
@@ -33,7 +33,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import java.util.Arrays;
 import java.util.List;

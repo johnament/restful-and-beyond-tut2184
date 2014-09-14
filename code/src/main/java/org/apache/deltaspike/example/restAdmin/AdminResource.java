@@ -17,24 +17,22 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.components.undertow;
+package org.apache.deltaspike.example.restAdmin;
 
-import io.undertow.servlet.api.InstanceFactory;
-import io.undertow.servlet.api.InstanceHandle;
-
-import javax.enterprise.inject.Vetoed;
+import javax.enterprise.context.RequestScoped;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
 
 /**
- * Created by johnament on 9/3/14.
+ * Basic rest resource for admin calls.
  */
-@Vetoed
-public class CDIInstanceFactory<T> implements InstanceFactory<T> {
-    private Class<T> aClass;
-    public CDIInstanceFactory(Class<T> aClass) {
-        this.aClass = aClass;
-    }
-    @Override
-    public InstanceHandle<T> createInstance() throws InstantiationException {
-        return new CDIInstanceHandle<>(aClass);
+@Path("/admin")
+@RequestScoped
+public class AdminResource {
+    @GET
+    @Produces("text/plain")
+    public String doGet() {
+        return "admin";
     }
 }

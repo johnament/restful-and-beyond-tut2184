@@ -17,22 +17,19 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.rest;
+package org.apache.deltaspike.example.config;
 
-import javax.enterprise.context.RequestScoped;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import org.apache.deltaspike.core.api.config.PropertyFileConfig;
+
+import javax.enterprise.context.ApplicationScoped;
 
 /**
- * Basic rest resource for admin calls.
+ * Created by johnament on 9/13/14.
  */
-@Path("/admin")
-@RequestScoped
-public class AdminResource {
-    @GET
-    @Produces("text/plain")
-    public String doGet() {
-        return "admin";
+@ApplicationScoped
+public class AppConfig implements PropertyFileConfig {
+    @Override
+    public String getPropertyFileName() {
+        return "application-configuration.properties";
     }
 }

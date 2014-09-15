@@ -19,18 +19,20 @@
 
 package org.apache.deltaspike.example.mongo;
 
-import javax.enterprise.context.Dependent;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
- * Created by johnament on 9/12/14.
+ * Created by johnament on 9/14/14.
  */
-@MongoDBRepository
-@Dependent
-public class MongoDBHandler implements InvocationHandler{
+@ApplicationScoped
+public class APIHitDAO extends MongoDBDAO<APIHit> {
     @Override
-    public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        return null;
+    protected String getDBName() {
+        return "api";
+    }
+
+    @Override
+    protected String getCollectionName() {
+        return "hits";
     }
 }

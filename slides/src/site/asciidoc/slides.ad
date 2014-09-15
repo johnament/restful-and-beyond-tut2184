@@ -377,6 +377,13 @@ public interface EmployeeRepository extends
     EntityRepository<Employees,Integer> { }
 --
 
+[.topic.intro]
+== Application Startup
+* Formally, in CDI, there is no concept of an eagerly instantiated bean
+* You can do start up work in extensions (e.g. bind `EntityManagers` or HTTP connections)
+* In CDI 1.0, only solution was to manually fire an event
+* In CDI 1.1+ new `Initialized` to watch for the creation of scopes
+
 [.topic.ending]
 == Thank you!
 

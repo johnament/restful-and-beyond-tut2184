@@ -19,18 +19,35 @@
 
 package org.apache.deltaspike.example.mongo;
 
-import org.apache.deltaspike.partialbean.api.PartialBeanBinding;
+import com.mongodb.BasicDBObject;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.Date;
 
 /**
- * Created by johnament on 9/12/14.
+ * Created by johnament on 9/14/14.
  */
-@PartialBeanBinding
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface MongoDBRepository {
+public class APIHit extends BasicDBObject {
+    public void setStartTime(Date date) {
+        super.put("startTime",date);
+    }
+
+    public void setEndTime(Date date) {
+        super.put("endTime",date);
+    }
+
+    public void setURI(String uri) {
+        super.put("uri",uri);
+    }
+
+    public Date getStartTime() {
+        return super.getDate("startTime");
+    }
+
+    public Date getEndTime() {
+        return super.getDate("endTime");
+    }
+
+    public String getURI() {
+        return super.getString("uri");
+    }
 }

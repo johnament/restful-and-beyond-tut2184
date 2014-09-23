@@ -17,33 +17,25 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.persistence;
+package org.apache.deltaspike.example.jpa;
 
-import org.apache.deltaspike.example.tests.employees.EmployeeRepository;
-import org.apache.deltaspike.example.tests.employees.Employees;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.apache.deltaspike.data.api.EntityRepository;
+import org.apache.deltaspike.data.api.Query;
+import org.apache.deltaspike.data.api.QueryParam;
+import org.apache.deltaspike.data.api.Repository;
+import org.apache.deltaspike.data.api.SingleResultType;
 
-import javax.inject.Inject;
 import java.util.List;
 
 /**
- * Created by johnament on 9/11/14.
+ * Created by johnament on 9/21/14.
  */
-@Transactional
-public class TransactionBean2 {
+@Repository(forEntity = Course.class)
+public interface CourseRepository extends EntityRepository<Course,Integer>{
+    @Query(value = "select c from Course c left outer join fetch c.enrollmentList where c.courseId = :courseId",
+            singleResult = SingleResultType.OPTIONAL)
+    public Course findCourse(@QueryParam("courseId") int courseId);
 
-    @Inject
-    private EmployeeRepository employeeRepository;
-
-    public void createEmployee(String first, String last) {
-        Employees e = new Employees();
-        e.setFirstName(first);
-        e.setLastName(last);
-        Employees e2 = employeeRepository.save(e);
-        System.out.println("Employee id :" + e2.getId());
-    }
-
-    public List<Employees> findAll() {
-        return employeeRepository.findAll();
-    }
+    @Query("select c from Course c left outer join fetch c.enrollmentList order by c.courseId desc")
+    public List<Course> listAllCourses();
 }

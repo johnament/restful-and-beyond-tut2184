@@ -17,33 +17,23 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.persistence;
+package org.apache.deltaspike.example.rest;
 
-import org.apache.deltaspike.example.tests.employees.EmployeeRepository;
-import org.apache.deltaspike.example.tests.employees.Employees;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.apache.deltaspike.example.jpa.Enrollment;
 
-import javax.inject.Inject;
 import java.util.List;
 
 /**
- * Created by johnament on 9/11/14.
+ * Created by johnament on 9/21/14.
  */
-@Transactional
-public class TransactionBean2 {
+public class Enrollments {
+    private List<Enrollment> enrollmentList;
 
-    @Inject
-    private EmployeeRepository employeeRepository;
-
-    public void createEmployee(String first, String last) {
-        Employees e = new Employees();
-        e.setFirstName(first);
-        e.setLastName(last);
-        Employees e2 = employeeRepository.save(e);
-        System.out.println("Employee id :" + e2.getId());
+    public List<Enrollment> getEnrollmentList() {
+        return enrollmentList;
     }
 
-    public List<Employees> findAll() {
-        return employeeRepository.findAll();
+    public void setEnrollmentList(List<Enrollment> enrollmentList) {
+        this.enrollmentList = enrollmentList;
     }
 }

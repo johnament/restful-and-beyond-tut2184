@@ -21,6 +21,7 @@ package org.apache.deltaspike.example.rest;
 
 import com.google.common.collect.Sets;
 import org.jboss.resteasy.cdi.ResteasyCdiExtension;
+import org.jboss.resteasy.plugins.providers.jackson.ResteasyJacksonProvider;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -45,7 +46,7 @@ public class RestAPI extends Application {
         resultClasses.addAll(classes);
         resteasyCdiExtension.getProviders().forEach(resultClasses::add);
         resteasyCdiExtension.getResources().forEach(resultClasses::add);
-
+        resultClasses.add(ResteasyJacksonProvider.class);
         return resultClasses;
     }
 }

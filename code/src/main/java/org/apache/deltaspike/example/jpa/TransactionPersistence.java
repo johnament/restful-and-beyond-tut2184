@@ -39,7 +39,7 @@ public class TransactionPersistence {
     @PersistenceUnitName("DefaultApp")
     private EntityManagerFactory entityManagerFactory;
 
-    private final Logger logger = Logger.getLogger(ShortPersistence.class);
+    private final Logger logger = Logger.getLogger(TransactionPersistence.class);
 
     @Produces
     @TransactionScoped

@@ -19,47 +19,61 @@
 
 package org.apache.deltaspike.example.jpa;
 
+import org.apache.deltaspike.example.json.CourseSerializer;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.List;
 
 /**
- * JPA Entity for employees.
+ * Created by johnament on 9/21/14.
  */
 @Entity
-@Table(name="employees")
-public class Employees {
+@Table(name="courses")
+@JsonSerialize(using = CourseSerializer.class)
+public class Course {
     @Id
     @GeneratedValue
-    private int id;
-    @Column(name="first_name")
-    private String firstName;
-    @Column(name="last_name")
-    private String lastName;
+    private Integer courseId;
+    @Column
+    private String name;
+    @OneToMany(mappedBy = "course")
+    private List<Enrollment> enrollmentList;
 
-    public int getId() {
-        return id;
+    public Course() {
+
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public Course(String name) {
+        this.name = name;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public Integer getCourseId() {
+        return courseId;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setCourseId(Integer courseId) {
+        this.courseId = courseId;
     }
 
-    public String getLastName() {
-        return lastName;
+    public String getName() {
+        return name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Enrollment> getEnrollmentList() {
+        return enrollmentList;
+    }
+
+    public void setEnrollmentList(List<Enrollment> enrollmentList) {
+        this.enrollmentList = enrollmentList;
     }
 }

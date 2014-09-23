@@ -19,40 +19,35 @@
 
 package org.apache.deltaspike.example.mongo;
 
-/**
- * Created by johnament on 9/14/14.
- */
-
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
 import org.apache.log4j.Logger;
+import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Key;
+import org.mongodb.morphia.Morphia;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import java.lang.reflect.ParameterizedType;
 
 @Vetoed
-public abstract class MongoDBDAO<T extends DBObject> {
-    private final Logger logger = Logger.getLogger(MongoDBDAO.class);
+public abstract class MongoDBDAO<T> {
     @Inject
     private MongoClient mongoClient;
 
-    public void insert(T t) {
-        DBCollection collection = getCollection();
-        Object id = collection.insert(t);
-        logger.info("The id is: "+id);
-        t.put("_id",id);
+    protected Datastore datastore;
+
+    @PostConstruct
+    public void init() {
+        Morphia morphia =  new Morphia();
+        morphia.map(APIHit.class);
+        this.datastore = morphia.createDatastore(mongoClient,getDBName());
     }
 
-    public DBCollection getCollection() {
-        DB db = this.mongoClient.getDB(getDBName());
-        DBCollection collection = db.getCollection(getCollectionName());
-        Class<T> clazz = getGenericClass();
-        logger.info("Generic class is "+clazz);
-        collection.setObjectClass(clazz);
-        return collection;
+    public Object insert(T t) {
+        Key<T> result = this.datastore.save(t);
+        return result.getId();
     }
 
     private Class<T> getGenericClass() {
@@ -61,6 +56,4 @@ public abstract class MongoDBDAO<T extends DBObject> {
     }
 
     protected abstract String getDBName();
-
-    protected abstract String getCollectionName();
 }

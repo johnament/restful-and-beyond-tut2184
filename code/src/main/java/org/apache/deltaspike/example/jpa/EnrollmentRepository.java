@@ -20,11 +20,16 @@
 package org.apache.deltaspike.example.jpa;
 
 import org.apache.deltaspike.data.api.EntityRepository;
+import org.apache.deltaspike.data.api.Query;
 import org.apache.deltaspike.data.api.Repository;
 
+import java.util.List;
+
 /**
- * Created by johnament on 9/11/14.
+ * Created by johnament on 9/21/14.
  */
-@Repository(forEntity = Employees.class)
-public interface EmployeeRepository extends EntityRepository<Employees,Integer> {
+@Repository(forEntity = Enrollment.class)
+public interface EnrollmentRepository extends EntityRepository<Enrollment,Integer>{
+    @Query("select e from Enrollment e where e.course = :course")
+    public List<Enrollment> findByCourse(Course course);
 }

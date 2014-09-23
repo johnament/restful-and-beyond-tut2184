@@ -17,33 +17,35 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.persistence;
+package org.apache.deltaspike.example.rest;
 
-import org.apache.deltaspike.example.tests.employees.EmployeeRepository;
-import org.apache.deltaspike.example.tests.employees.Employees;
-import org.apache.deltaspike.jpa.api.transaction.Transactional;
+import org.apache.deltaspike.example.mongo.APIHit;
+import org.apache.deltaspike.example.mongo.APIHitDAO;
+import org.apache.deltaspike.example.mongo.APIHits;
 
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.util.List;
 
 /**
- * Created by johnament on 9/11/14.
+ * Created by johnament on 9/21/14.
  */
-@Transactional
-public class TransactionBean2 {
-
+@Path("/api")
+@Produces(MediaType.APPLICATION_JSON)
+@RequestScoped
+public class APIRestResource {
     @Inject
-    private EmployeeRepository employeeRepository;
+    private APIHitDAO apiHitDAO;
 
-    public void createEmployee(String first, String last) {
-        Employees e = new Employees();
-        e.setFirstName(first);
-        e.setLastName(last);
-        Employees e2 = employeeRepository.save(e);
-        System.out.println("Employee id :" + e2.getId());
-    }
-
-    public List<Employees> findAll() {
-        return employeeRepository.findAll();
+    @GET
+    public APIHits doGet() {
+        List<APIHit> hits = apiHitDAO.findAll();
+        APIHits apiHits = new APIHits();
+        apiHits.setApiHitList(hits);
+        return apiHits;
     }
 }

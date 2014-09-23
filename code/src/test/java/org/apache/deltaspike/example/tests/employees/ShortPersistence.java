@@ -17,7 +17,7 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.jpa;
+package org.apache.deltaspike.example.tests.employees;
 
 import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
 import org.apache.log4j.Logger;
@@ -26,6 +26,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -35,6 +36,7 @@ import javax.persistence.EntityTransaction;
  * Created by johnament on 9/11/14.
  */
 @ApplicationScoped
+@Vetoed
 public class ShortPersistence {
     @Inject
     @PersistenceUnitName("DefaultApp")

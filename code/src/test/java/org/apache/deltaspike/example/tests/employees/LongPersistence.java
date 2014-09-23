@@ -17,7 +17,7 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.jpa;
+package org.apache.deltaspike.example.tests.employees;
 
 import org.apache.deltaspike.core.api.config.ConfigProperty;
 import org.apache.log4j.Logger;
@@ -27,6 +27,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
+import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -39,6 +40,7 @@ import java.util.Map;
  * A component for starting and stopping entity managers.
  */
 @ApplicationScoped
+@Vetoed
 public class LongPersistence {
     private static final Logger logger = Logger.getLogger(LongPersistence.class);
     @Inject

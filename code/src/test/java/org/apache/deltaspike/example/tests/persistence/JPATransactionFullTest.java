@@ -21,8 +21,8 @@ package org.apache.deltaspike.example.tests.persistence;
 
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.config.LogSetup;
-import org.apache.deltaspike.example.jpa.EmployeeRepository;
-import org.apache.deltaspike.example.jpa.Employees;
+import org.apache.deltaspike.example.tests.employees.EmployeeRepository;
+import org.apache.deltaspike.example.tests.employees.Employees;
 import org.apache.deltaspike.example.jpa.TransactionPersistence;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

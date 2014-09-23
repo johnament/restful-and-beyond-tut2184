@@ -21,6 +21,8 @@ John D. Ament
 * CDI 2.0 Expert Group Member
 * Twitter @JohnAment
 
+* Presentation content available at http://bit.ly/j1-tut2184
+
 |===
 | image:ds-logo.png[DeltaSpikeLogo, 200] | *real graphic pending*
 |===
@@ -32,7 +34,6 @@ John D. Ament
 * Hibernate (JPA)
 * JBoss Weld (CDI)
 * Apache DeltaSpike (CDI Extensions)
-* Apache CXF (JAX-WS)
 * JBoss RestEasy (JAX-RS)
 * JBoss Undertow (Servlet & WebSocket)
 * Arquillian
@@ -383,6 +384,15 @@ public interface EmployeeRepository extends
 * You can do start up work in extensions (e.g. bind `EntityManagers` or HTTP connections)
 * In CDI 1.0, only solution was to manually fire an event
 * In CDI 1.1+ new `Initialized` to watch for the creation of scopes
+
+[.topic.intro]
+== Building a Real API
+* We want to track all API requests in a separate database.
+* Allow for crud operations against courses
+* Notify consumers of new courses available
+* Allow people to enroll for a course (free of charge!)
+* Notify consumers when enrollment hits 5 for any course
+* Don't allow new enrollment after 5 enrollees
 
 [.topic.ending]
 == Thank you!

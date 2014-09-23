@@ -19,35 +19,62 @@
 
 package org.apache.deltaspike.example.mongo;
 
-import com.mongodb.BasicDBObject;
+import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 
 import java.util.Date;
 
 /**
  * Created by johnament on 9/14/14.
  */
-public class APIHit extends BasicDBObject {
-    public void setStartTime(Date date) {
-        super.put("startTime",date);
+@Entity("hits")
+public class APIHit {
+    @Id
+    private ObjectId id;
+
+    private Date startTime;
+    private Date endTime;
+    private String uri;
+    private String method;
+
+    public ObjectId getId() {
+        return id;
     }
 
-    public void setEndTime(Date date) {
-        super.put("endTime",date);
-    }
-
-    public void setURI(String uri) {
-        super.put("uri",uri);
+    public void setId(ObjectId id) {
+        this.id = id;
     }
 
     public Date getStartTime() {
-        return super.getDate("startTime");
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
     }
 
     public Date getEndTime() {
-        return super.getDate("endTime");
+        return endTime;
     }
 
-    public String getURI() {
-        return super.getString("uri");
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public void setMethod(String method) {
+        this.method = method;
     }
 }

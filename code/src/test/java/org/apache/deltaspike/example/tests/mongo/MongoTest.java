@@ -62,11 +62,10 @@ public class MongoTest {
         APIHit hit = new APIHit();
         hit.setEndTime(new Date());
         hit.setStartTime(new Date());
-        hit.setURI("/foo/bar/baz");
+        hit.setUri("/foo/bar/baz");
 
         apiHitDAO.insert(hit);
 
-        DBCollection collection = apiHitDAO.getCollection();
-        collection.find().forEach(h -> System.out.println(h.get("_id")));
+        apiHitDAO.findAll().forEach(h -> System.out.println(h.getId()));
     }
 }

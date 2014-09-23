@@ -19,7 +19,10 @@
 
 package org.apache.deltaspike.example.mongo;
 
+import org.mongodb.morphia.query.Query;
+
 import javax.enterprise.context.ApplicationScoped;
+import java.util.List;
 
 /**
  * Created by johnament on 9/14/14.
@@ -31,8 +34,8 @@ public class APIHitDAO extends MongoDBDAO<APIHit> {
         return "api";
     }
 
-    @Override
-    protected String getCollectionName() {
-        return "hits";
+    public List<APIHit> findAll() {
+        Query q = super.datastore.createQuery(APIHit.class);
+        return q.asList();
     }
 }

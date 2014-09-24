@@ -28,6 +28,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -43,6 +44,7 @@ public class Course {
     @Column
     private String name;
     @OneToMany(mappedBy = "course")
+    @Size(max=4,groups = {NewEnrollment.class},message = "course.enrollments.full")
     private List<Enrollment> enrollmentList;
 
     public Course() {
@@ -76,4 +78,6 @@ public class Course {
     public void setEnrollmentList(List<Enrollment> enrollmentList) {
         this.enrollmentList = enrollmentList;
     }
+
+    public static interface NewEnrollment {}
 }

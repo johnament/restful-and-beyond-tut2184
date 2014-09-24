@@ -22,15 +22,42 @@ package org.apache.deltaspike.example.tests.application;
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
 import org.apache.deltaspike.cdise.api.ContextControl;
+import org.apache.deltaspike.example.Listener;
+import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
+import org.apache.deltaspike.example.components.interceptor.RequestScopeInterceptor;
+import org.apache.deltaspike.example.components.servlet.WebFilterLiteral;
+import org.apache.deltaspike.example.components.undertow.UndertowComponent;
+import org.apache.deltaspike.example.components.websocket.ResponderServer;
+import org.apache.deltaspike.example.config.AppConfig;
+import org.apache.deltaspike.example.delegate.Invoker;
+import org.apache.deltaspike.example.delegate.RequestInvoker;
 import org.apache.deltaspike.example.jpa.Course;
 import org.apache.deltaspike.example.jpa.Enrollment;
+import org.apache.deltaspike.example.json.CourseSerializer;
+import org.apache.deltaspike.example.mongo.APIHit;
+import org.apache.deltaspike.example.rest.APIRestResource;
 import org.apache.deltaspike.example.rest.Courses;
 import org.apache.deltaspike.example.rest.Enrollments;
+import org.apache.deltaspike.example.restAdmin.AdminApplication;
+import org.apache.deltaspike.example.restAdmin.AdminResource;
+import org.apache.deltaspike.example.se.ApplicationStartupEvent;
+import org.apache.deltaspike.example.security.AccessDeniedExceptionMapper;
+import org.apache.deltaspike.example.socket.CourseServer;
+import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
+import org.apache.deltaspike.example.tests.deployers.WebSocketDeployer;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.StringAsset;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import javax.inject.Inject;
 import javax.websocket.ContainerProvider;
 import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
@@ -42,31 +69,67 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by johnament on 9/21/14.
  */
-public class CourseCrudTest {
-    private static CdiContainer cdiContainer;
-    private static ContextControl contextControl;
-
-    @BeforeClass
-    public static void initWeld() {
-        cdiContainer = CdiContainerLoader.getCdiContainer();
-        cdiContainer.boot();
-        contextControl = cdiContainer.getContextControl();
-        contextControl.startContexts();
+@RunWith(Arquillian.class)
+public class CourseCrudArgTest {
+    @Deployment
+    public static JavaArchive createArchive() {
+        String beansXml = "<beans xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"\n" +
+                "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "       xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee\n" +
+                "\t\thttp://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd\"\n" +
+                "       bean-discovery-mode=\"all\">\n" +
+                "    <interceptors>\n" +
+                "        <class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>\n" +
+                "    </interceptors>\n" +
+                "</beans>";
+        String[] gavs = new String[]{"org.apache.deltaspike.core:deltaspike-core-api",
+                "org.apache.deltaspike.core:deltaspike-core-impl",
+                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api",
+                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld",
+                "org.apache.deltaspike.modules:deltaspike-jpa-module-api",
+                "org.apache.deltaspike.modules:deltaspike-jpa-module-impl",
+                "org.apache.deltaspike.modules:deltaspike-data-module-api",
+                "org.apache.deltaspike.modules:deltaspike-data-module-impl"};
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "course-builder.jar")
+                .addPackages(false,Listener.class.getPackage(),
+                        StartsRequestScope.class.getPackage(),
+                        RequestScopeInterceptor.class.getPackage(),
+                        WebFilterLiteral.class.getPackage(),
+                        UndertowComponent.class.getPackage(),
+                        ResponderServer.class.getPackage(),
+                        AppConfig.class.getPackage(),
+                        RequestInvoker.class.getPackage(),
+                        Course.class.getPackage(),
+                        CourseSerializer.class.getPackage(),
+                        APIHit.class.getPackage(),
+                        APIRestResource.class.getPackage(),
+                        AdminResource.class.getPackage(),
+                        ApplicationStartupEvent.class.getPackage(),
+                        AccessDeniedExceptionMapper.class.getPackage(),
+                        CourseServer.class.getPackage(),
+                        Listener.class.getPackage()
+                        )
+                .addClass(CourseClient.class)
+                .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
+                ;
+        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
+                .resolve(gavs)
+                .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+        return jar;
     }
 
-    @AfterClass
-    public static void shutdownWeld() {
-        contextControl.stopContexts();
-        cdiContainer.shutdown();
-    }
+    @Inject
+    private Listener listener;
 
     @Test
     public void testCreateCourse() {
+        listener.onAppStart(null);
         // given i have created a course
         Course course = new Course();
         course.setName("Course One");
@@ -93,6 +156,7 @@ public class CourseCrudTest {
 
     @Test
     public void testListCourses() {
+        listener.onAppStart(null);
         // given i create many courses
         List<Course> courseList = new ArrayList<>();
         courseList.add(new Course("Course A"));
@@ -112,6 +176,7 @@ public class CourseCrudTest {
 
     @Test
     public void testEnrollInNonExistentCourse() throws Exception {
+        listener.onAppStart(null);
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         URI uri = URI.create("ws://localhost:8787/courseServer");
         Session session = container.connectToServer(CourseClient.class,uri);

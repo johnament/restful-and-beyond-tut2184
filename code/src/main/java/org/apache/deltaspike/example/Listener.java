@@ -23,7 +23,9 @@ import org.apache.deltaspike.core.api.config.ConfigProperty;
 import org.apache.deltaspike.example.components.servlet.RequestScopedServletRequestListener;
 import org.apache.deltaspike.example.components.servlet.WebServletLiteral;
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
+import org.apache.deltaspike.example.json.CourseSerializer;
 import org.apache.deltaspike.example.rest.RestAPI;
+import org.apache.deltaspike.example.socket.CourseServer;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.cdi.CdiInjectorFactory;
 import org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher;
@@ -78,6 +80,7 @@ public class Listener {
         servletContextParams.put(ResteasyDeployment.class.getName(), createDeployment());
         undertowComponent = new UndertowComponent(httpListenPort,httpListenAddress,contextRoot,deploymentName)
                 .addServlet(resteasyServlet,HttpServlet30Dispatcher.class)
+                .setWebSocketEndpoint(CourseServer.class)
                 .addListener(RequestScopedServletRequestListener.class)
                 .start(servletContextParams);
         logger.info("Container up and running on port "+httpListenPort);

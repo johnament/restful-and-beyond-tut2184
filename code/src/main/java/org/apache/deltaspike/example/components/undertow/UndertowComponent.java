@@ -145,23 +145,23 @@ public class UndertowComponent {
                 .setContextPath(contextPath)
                 .setDeploymentName(name)
                 .setClassLoader(ClassLoader.getSystemClassLoader());
-        if(this.websocketEndpointClass != null) {
-            di.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
-                    new WebSocketDeploymentInfo()
-                            .addEndpoint(websocketEndpointClass)
-            );
-        }
         XnioWorker worker = null;
         try {
             worker = Xnio.getInstance().createWorker(OptionMap.create(Options.THREAD_DAEMON, true));
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Unable to create XNIO",e);
         }
         Pool<ByteBuffer> buffers = new ByteBufferSlicePool(1024, 10240);
         WebSocketContainer container = new ServerWebSocketContainer(introspecter,
                 UndertowContainerProvider.class.getClassLoader(),
                 worker, buffers, new CompositeThreadSetupAction(Collections.<ThreadSetupAction>emptyList()), false);
         UndertowContainerProvider.addContainer(Thread.currentThread().getContextClassLoader(),container);
+        if(this.websocketEndpointClass != null) {
+            di.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
+                    new WebSocketDeploymentInfo()
+                            .addEndpoint(websocketEndpointClass).setWorker(worker)
+            );
+        }
         if(servletContextAttributes != null) {
             servletContextAttributes.forEach(di::addServletContextAttribute);
         }

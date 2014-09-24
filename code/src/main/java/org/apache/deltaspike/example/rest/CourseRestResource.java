@@ -23,10 +23,12 @@ import org.apache.deltaspike.example.jpa.Course;
 import org.apache.deltaspike.example.jpa.CourseRepository;
 import org.apache.deltaspike.example.jpa.Enrollment;
 import org.apache.deltaspike.example.jpa.EnrollmentRepository;
+import org.apache.deltaspike.example.socket.ClientConnectionComponent;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -36,6 +38,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import java.util.Set;
 
 /**
  * Created by johnament on 9/21/14.
@@ -54,6 +57,9 @@ public class CourseRestResource {
 
     @Inject
     private Validator validator;
+
+    @Inject
+    private ClientConnectionComponent clientConnectionComponent;
 
     @GET
     public Courses findAllCourses() {
@@ -82,8 +88,22 @@ public class CourseRestResource {
     public Enrollment enroll(@PathParam("courseId") Integer courseId,
                              Enrollment enrollment) {
         Course course = courseRepository.findCourse(courseId);
-        enrollment.setCourse(course);
-        return this.enrollmentRepository.save(enrollment);
+        Set<ConstraintViolation<Course>> courseConstraints = validator.validate(course, Course.NewEnrollment.class);
+        if(courseConstraints.isEmpty()) {
+            enrollment.setCourse(course);
+            if(course.getEnrollmentList().size() == 4) {
+                String msg = String.format("Course %s has reached max enrollments",courseId);
+                this.clientConnectionComponent.notifyAllSessions(msg);
+            }
+            return this.enrollmentRepository.save(enrollment);
+        }
+        else {
+            StringBuilder messages = new StringBuilder();
+            for(ConstraintViolation<Course> cv : courseConstraints) {
+                messages.append(cv.getMessage());
+            }
+            throw new RuntimeException(messages.toString());
+        }
     }
 
     @PUT
@@ -94,6 +114,8 @@ public class CourseRestResource {
 
     @POST
     public Course createCourse(Course course) {
+        String msg = String.format("New course %s has been created",course.getName());
+        this.clientConnectionComponent.notifyAllSessions(msg);
         return courseRepository.save(course);
     }
 }

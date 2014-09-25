@@ -155,11 +155,13 @@ public class UndertowComponent {
         WebSocketContainer container = new ServerWebSocketContainer(introspecter,
                 UndertowContainerProvider.class.getClassLoader(),
                 worker, buffers, new CompositeThreadSetupAction(Collections.<ThreadSetupAction>emptyList()), false);
-        UndertowContainerProvider.addContainer(Thread.currentThread().getContextClassLoader(),container);
+        UndertowContainerProvider.addContainer(ClassLoader.getSystemClassLoader(),container);
         if(this.websocketEndpointClass != null) {
             di.addServletContextAttribute(WebSocketDeploymentInfo.ATTRIBUTE_NAME,
                     new WebSocketDeploymentInfo()
-                            .addEndpoint(websocketEndpointClass).setWorker(worker)
+                            .addEndpoint(websocketEndpointClass)
+                            .setWorker(worker)
+                            .setBuffers(buffers)
             );
         }
         if(servletContextAttributes != null) {

@@ -23,7 +23,6 @@ import org.apache.deltaspike.example.mongo.APIHit;
 import org.apache.deltaspike.example.mongo.APIHitDAO;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Vetoed;
 import javax.enterprise.inject.spi.CDI;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -36,9 +35,8 @@ import java.util.Date;
 /**
  * Created by johnament on 9/21/14.
  */
-//@ApplicationScoped
-//@Provider
-@Vetoed
+@ApplicationScoped
+@Provider
 public class StoreAPIHitFilter implements ContainerRequestFilter, ContainerResponseFilter {
     @Override
     public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {

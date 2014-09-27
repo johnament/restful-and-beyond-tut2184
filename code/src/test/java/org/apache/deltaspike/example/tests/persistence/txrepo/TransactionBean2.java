@@ -20,7 +20,7 @@
 package org.apache.deltaspike.example.tests.persistence.txrepo;
 
 import org.apache.deltaspike.example.tests.persistence.EmployeeRepository;
-import org.apache.deltaspike.example.tests.persistence.Employees;
+import org.apache.deltaspike.example.jpa.Employees;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import javax.inject.Inject;

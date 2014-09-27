@@ -23,6 +23,7 @@ import org.apache.deltaspike.example.jpa.Course;
 import org.apache.deltaspike.example.jpa.CourseRepository;
 import org.apache.deltaspike.example.jpa.Enrollment;
 import org.apache.deltaspike.example.jpa.EnrollmentRepository;
+import org.apache.deltaspike.example.security.CourseCreateBinding;
 import org.apache.deltaspike.example.socket.ClientConnectionComponent;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
@@ -122,9 +123,11 @@ public class CourseRestAPI {
     }
 
     @POST
+    @CourseCreateBinding
     public Course createCourse(Course course) {
         String msg = String.format("New course %s has been created",course.getName());
+        Course c = courseRepository.save(course);
         this.clientConnectionComponent.notifyAllSessions(msg);
-        return courseRepository.save(course);
+        return c;
     }
 }

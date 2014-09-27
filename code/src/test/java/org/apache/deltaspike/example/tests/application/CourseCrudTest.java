@@ -26,6 +26,7 @@ import org.apache.deltaspike.example.jpa.Course;
 import org.apache.deltaspike.example.jpa.Enrollment;
 import org.apache.deltaspike.example.rest.Courses;
 import org.apache.deltaspike.example.rest.Enrollments;
+import org.jboss.resteasy.plugins.providers.jackson.ResteasyJacksonProvider;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -52,7 +53,7 @@ public class CourseCrudTest {
     private static ContextControl contextControl;
 
     @BeforeClass
-    public static void initWeld() {
+    public static void initCDI() {
         cdiContainer = CdiContainerLoader.getCdiContainer();
         cdiContainer.boot();
         contextControl = cdiContainer.getContextControl();
@@ -60,7 +61,7 @@ public class CourseCrudTest {
     }
 
     @AfterClass
-    public static void shutdownWeld() {
+    public static void shutdownCDI() {
         contextControl.stopContexts();
         cdiContainer.shutdown();
     }
@@ -111,14 +112,14 @@ public class CourseCrudTest {
     }
 
     @Test
-    public void testEnrollInNonExistentCourse() throws Exception {
+    public void testEnrollment() throws Exception {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         URI uri = URI.create("ws://localhost:8787/courseServer");
         Session session = container.connectToServer(CourseClient.class,uri);
         session.setMaxIdleTimeout(50000);
         System.out.println("session "+session.getId());
         Client client = ClientBuilder.newClient();
-
+        client.register(ResteasyJacksonProvider.class);
         WebTarget target = client.target("http://localhost:8787/courses/");
         Course c1 = new Course();
         c1.setName("Course c1");

@@ -19,7 +19,7 @@
 
 package org.apache.deltaspike.example.tests.persistence.tx;
 
-import org.apache.deltaspike.example.tests.persistence.Employees;
+import org.apache.deltaspike.example.jpa.Employees;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
 import javax.enterprise.inject.spi.CDI;

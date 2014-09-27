@@ -47,8 +47,7 @@ public class Startup {
     }
 
     private void registerShutdownHook(CdiContainer cdiContainer) {
-        Runtime.getRuntime().addShutdownHook(new Thread(
-                cdiContainer::shutdown
-                ));
+        Runtime.getRuntime().addShutdownHook(
+                new Thread(cdiContainer::shutdown));
     }
 }

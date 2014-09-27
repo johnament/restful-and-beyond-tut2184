@@ -41,6 +41,18 @@ html, .view body {
   font-family: 'Yanone Kaffeesatz', sans-serif;
 }
 
+.bg {
+    background-color:#ffffff;
+    background-image: url('images/ds-logo.png');
+    /*background-size: 800px 600px;*/
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+.bg > h2 {
+    display:none;
+}
+
 body, .view section {
   background: #1D2326;
   font-size: 17px;

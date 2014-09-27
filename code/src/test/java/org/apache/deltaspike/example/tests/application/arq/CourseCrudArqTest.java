@@ -38,6 +38,7 @@ import org.apache.deltaspike.example.restAdmin.AdminResource;
 import org.apache.deltaspike.example.se.ApplicationStartupEvent;
 import org.apache.deltaspike.example.security.AccessDeniedExceptionMapper;
 import org.apache.deltaspike.example.socket.CourseServer;
+import org.apache.deltaspike.example.tests.TestUtils;
 import org.apache.deltaspike.example.tests.application.CourseClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -67,7 +68,7 @@ import java.util.List;
  * Created by johnament on 9/21/14.
  */
 @RunWith(Arquillian.class)
-public class CourseCrudArgTest {
+public class CourseCrudArqTest {
     @Deployment
     public static JavaArchive createArchive() {
         String beansXml = "<beans xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"\n" +
@@ -109,11 +110,7 @@ public class CourseCrudArgTest {
                 .addClass(CourseClient.class)
                 .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
                 ;
-        Maven.resolver().offline().loadPomFromFile("pom.xml")
-                .resolve(gavs)
-                .withTransitivity()
-                .asList(JavaArchive.class)
-                .forEach(jar::merge);
+        TestUtils.resolveListOfArchives(gavs).forEach(jar::merge);
         return jar;
     }
 

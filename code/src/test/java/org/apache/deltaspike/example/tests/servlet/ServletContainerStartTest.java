@@ -20,6 +20,7 @@
 package org.apache.deltaspike.example.tests.servlet;
 
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
+import org.apache.deltaspike.example.tests.TestUtils;
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.tests.deployers.GreeterServlet;
 import org.apache.deltaspike.example.tests.deployers.UndertowServletDeployer;
@@ -57,9 +58,8 @@ public class ServletContainerStartTest {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar").addPackage(UndertowComponent.class.getPackage())
                 .addPackage(ExampleConfigSource.class.getPackage()).addPackage(GreeterServlet.class.getPackage())
                 .addAsManifestResource(new StringAsset(beansXml),"beans.xml");
-        Maven.resolver().offline().loadPomFromFile("pom.xml")
-                .resolve("org.apache.deltaspike.core:deltaspike-core-api","org.apache.deltaspike.core:deltaspike-core-impl")
-                .withTransitivity().asList(JavaArchive.class)
+        TestUtils.resolveListOfArchives("org.apache.deltaspike.core:deltaspike-core-api",
+                "org.apache.deltaspike.core:deltaspike-core-impl")
                 .forEach(jar::merge);
 
         return jar;

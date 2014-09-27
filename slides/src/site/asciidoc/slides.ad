@@ -6,12 +6,15 @@ John D. Ament
 :dzslides-fonts: family=Yanone+Kaffeesatz:400,700,200,300&family=Cedarville+Cursive
 :dzslides-highlight: tomorrow-night-bright
 
+[.topic.bg]
+== Apache DeltaSpike
+
 [.topic.intro]
 == Intro
 [.incremental]
-* Learn about microservices, deploying light weight applications
-* Build using Java EE technologies in SE
 * Leverage Apache DeltaSpike to build CDI based applications
+* Learn about microservices, deploying light weight applications on the JVM without an application server
+* Build using Java EE technologies in SE
 
 [.topic.intro]
 == About Me
@@ -53,11 +56,11 @@ John D. Ament
 * MongoDB
 * Arquillian
 
-[.topic]
+[.topic.intro]
 == The Server
 * Start a CDI runtime
 * Use Undertow to run a Servlet Container
-* Build a reusable Undertow component to handle class registration
+* Build a reusable Undertow component to handle component integration
 
 [.topic.intro]
 == Container Control

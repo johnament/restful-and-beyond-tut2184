@@ -19,22 +19,20 @@
 
 package org.apache.deltaspike.example.tests.mongo;
 
-import com.mongodb.DBCollection;
 import org.apache.deltaspike.example.mongo.APIHit;
 import org.apache.deltaspike.example.mongo.APIHitDAO;
 import org.apache.deltaspike.example.mongo.MongoProducer;
+import org.apache.deltaspike.example.tests.TestUtils;
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -44,14 +42,13 @@ import java.util.Date;
 public class MongoTest {
     @Deployment
     public static JavaArchive create() {
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addPackage(MongoProducer.class.getPackage())
+        JavaArchive jar = ShrinkWrap.create(JavaArchive.class)
+                .addPackage(MongoProducer.class.getPackage())
                 .addClass(ExampleConfigSource.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-        Maven.resolver().offline().loadPomFromFile("pom.xml")
-                .resolve("org.apache.deltaspike.core:deltaspike-core-api", "org.apache.deltaspike.core:deltaspike-core-impl")
-                .withTransitivity()
-                .asList(JavaArchive.class)
-                .forEach(jar::merge);
+        String[] gavs = {"org.apache.deltaspike.core:deltaspike-core-api",
+                "org.apache.deltaspike.core:deltaspike-core-impl"};
+        TestUtils.resolveListOfArchives(gavs).forEach(jar::merge);
 
         return jar;
     }

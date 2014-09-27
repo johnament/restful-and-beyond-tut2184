@@ -17,23 +17,20 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.persistence;
+package org.apache.deltaspike.example.tests;
 
-import org.apache.deltaspike.data.api.EntityRepository;
-import org.apache.deltaspike.data.api.Query;
-import org.apache.deltaspike.data.api.QueryParam;
-import org.apache.deltaspike.data.api.Repository;
-import org.apache.deltaspike.example.jpa.Employees;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import java.util.List;
 
 /**
- * Created by johnament on 9/11/14.
+ * Created by johnament on 9/27/14.
  */
-@Repository(forEntity = Employees.class)
-public interface EmployeeRepository extends EntityRepository<Employees,Integer> {
-
-    @Query("select e from Employees e where lastName like :name")
-    public List<Employees> findByname(@QueryParam("name") String name);
-
+public class TestUtils {
+    public static List<JavaArchive> resolveListOfArchives(String...gavs) {
+        return Maven.resolver().offline().loadPomFromFile("pom.xml")
+                .resolve(gavs)
+                .withTransitivity().asList(JavaArchive.class);
+    }
 }

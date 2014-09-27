@@ -20,6 +20,7 @@
 package org.apache.deltaspike.example.tests.servlet;
 
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
+import org.apache.deltaspike.example.tests.TestUtils;
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.restAdmin.AdminApplication;
 import org.apache.deltaspike.example.tests.deployers.UndertowRestDeployer;
@@ -62,9 +63,7 @@ public class AdminContainerStartTest {
                 .addPackage(AdminApplication.class.getPackage())
                 .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
                 .addClass(UndertowRestDeployer.class);
-        Maven.resolver().offline().loadPomFromFile("pom.xml")
-                .resolve(gavs)
-                .withTransitivity().asList(JavaArchive.class).forEach(jar::merge);
+        TestUtils.resolveListOfArchives(gavs).forEach(jar::merge);
         return jar;
     }
 

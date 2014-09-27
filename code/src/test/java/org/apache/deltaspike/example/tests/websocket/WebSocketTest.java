@@ -26,8 +26,8 @@ import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.components.websocket.ResponderServer;
 import org.apache.deltaspike.example.components.websocket.WebSocketTestClient;
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
-import org.apache.deltaspike.example.delegate.Invoker;
-import org.apache.deltaspike.example.delegate.RequestInvoker;
+import org.apache.deltaspike.example.requestDelegate.Invoker;
+import org.apache.deltaspike.example.requestDelegate.RequestInvoker;
 import org.apache.deltaspike.example.restAdmin.AdminApplication;
 import org.apache.deltaspike.example.tests.deployers.WebSocketDeployer;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -47,7 +47,6 @@ import javax.websocket.Session;
 import javax.websocket.WebSocketContainer;
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
 
 /**
  * Created by johnament on 9/3/14.
@@ -75,9 +74,10 @@ public class WebSocketTest {
                 .addClasses(StartsRequestScope.class, RequestScopeInterceptor.class, Invoker.class, RequestInvoker.class)
                 .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
                 ;
-        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
+        Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
-                .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+                .withTransitivity().asList(JavaArchive.class)
+                .forEach(jar::merge);
         return jar;
     }
 

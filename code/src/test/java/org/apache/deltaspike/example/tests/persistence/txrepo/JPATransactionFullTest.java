@@ -17,13 +17,13 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.persistence;
+package org.apache.deltaspike.example.tests.persistence.txrepo;
 
+import org.apache.deltaspike.example.jpa.EntityManagerProducer;
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.config.LogSetup;
-import org.apache.deltaspike.example.tests.employees.EmployeeRepository;
-import org.apache.deltaspike.example.tests.employees.Employees;
-import org.apache.deltaspike.example.jpa.TransactionPersistence;
+import org.apache.deltaspike.example.tests.persistence.EmployeeRepository;
+import org.apache.deltaspike.example.tests.persistence.Employees;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -34,7 +34,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import javax.inject.Inject;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -66,12 +65,14 @@ public class JPATransactionFullTest {
                 "org.apache.deltaspike.modules:deltaspike-data-module-impl"};
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar")
                 .addPackage(ExampleConfigSource.class.getPackage())
-                .addClasses(Employees.class, TransactionPersistence.class, TransactionBean2.class,
+                .addClasses(Employees.class, EntityManagerProducer.class, TransactionBean2.class,
                         EmployeeRepository.class);
 
-        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
+        Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
-                .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+                .withTransitivity()
+                .asList(JavaArchive.class)
+                .forEach(jar::merge);
 
 
         jar.delete("META-INF/beans.xml");

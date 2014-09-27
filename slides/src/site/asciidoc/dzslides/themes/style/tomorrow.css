@@ -264,7 +264,7 @@ section ul {
   font-size: 3em;
   /*text-transform: uppercase;*/
   font-weight: 700;
-  color: #4271ae;
+  color: #9AE7FF;
   text-align: right;
   margin-bottom: 1em;
 }
@@ -334,7 +334,7 @@ section dd:nth-of-type(2n) {
 }
 
 section p {
-  color: #4d4d4c;
+  color: #C5C5C5;
   font-weight: 700;
   font-size: 3.5em;
 }

@@ -17,35 +17,16 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.rest;
-
-import org.apache.deltaspike.example.mongo.APIHit;
-import org.apache.deltaspike.example.mongo.APIHitDAO;
-import org.apache.deltaspike.example.mongo.APIHits;
+package org.apache.deltaspike.example.requestDelegate;
 
 import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import java.util.List;
 
 /**
- * Created by johnament on 9/21/14.
+ * Created by johnament on 9/3/14.
  */
-@Path("/api")
-@Produces(MediaType.APPLICATION_JSON)
 @RequestScoped
-public class APIRestResource {
-    @Inject
-    private APIHitDAO apiHitDAO;
-
-    @GET
-    public APIHits doGet() {
-        List<APIHit> hits = apiHitDAO.findAll();
-        APIHits apiHits = new APIHits();
-        apiHits.setApiHitList(hits);
-        return apiHits;
+public class RequestInvoker {
+    public void inRequestScope() {
+        System.out.println("I'm in a request scope.");
     }
 }

@@ -20,7 +20,7 @@
 package org.apache.deltaspike.example.components.websocket;
 
 import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
-import org.apache.deltaspike.example.delegate.RequestInvoker;
+import org.apache.deltaspike.example.requestDelegate.RequestInvoker;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
@@ -28,7 +28,6 @@ import javax.enterprise.inject.spi.CDI;
 import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
-import java.io.IOException;
 
 /**
  * Created by johnament on 9/3/14.

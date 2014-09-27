@@ -17,22 +17,35 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.security;
+package org.apache.deltaspike.example.rest;
 
-import org.apache.deltaspike.security.api.authorization.SecurityBindingType;
+import org.apache.deltaspike.example.mongo.APIHit;
+import org.apache.deltaspike.example.mongo.APIHitDAO;
+import org.apache.deltaspike.example.mongo.APIHits;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import java.util.List;
 
 /**
- * Created by johnament on 9/7/14.
+ * Created by johnament on 9/21/14.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
-@Documented
-@SecurityBindingType
-public @interface Team1Binding {
+@Path("/api")
+@Produces(MediaType.APPLICATION_JSON)
+@RequestScoped
+public class APILookupResource {
+    @Inject
+    private APIHitDAO apiHitDAO;
+
+    @GET
+    public APIHits doGet() {
+        List<APIHit> hits = apiHitDAO.findAll();
+        APIHits apiHits = new APIHits();
+        apiHits.setApiHitList(hits);
+        return apiHits;
+    }
 }

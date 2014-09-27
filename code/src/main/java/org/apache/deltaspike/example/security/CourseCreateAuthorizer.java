@@ -19,26 +19,19 @@
 
 package org.apache.deltaspike.example.security;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import org.apache.deltaspike.security.api.authorization.Secures;
 
-import static java.lang.String.format;
+import javax.enterprise.context.RequestScoped;
+import javax.interceptor.InvocationContext;
 
 /**
  * Created by johnament on 9/7/14.
  */
 @RequestScoped
-@Path("/secured/foo")
-public class SecuredResource {
-    @Inject
-    private User user;
-    @GET
+public class CourseCreateAuthorizer {
+    @Secures
     @CourseCreateBinding
-    @Produces("text/plain")
-    public String greet() {
-        return format("Hello, %s!",user.getUsername());
+    public boolean canEditCourses(InvocationContext invocationContext, User user) {
+        return user.getGroups().stream().anyMatch("coursemanage"::equalsIgnoreCase);
     }
 }

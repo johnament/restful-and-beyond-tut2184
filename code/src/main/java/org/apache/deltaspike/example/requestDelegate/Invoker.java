@@ -17,16 +17,21 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.delegate;
+package org.apache.deltaspike.example.requestDelegate;
 
-import javax.enterprise.context.RequestScoped;
+import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.CDI;
 
 /**
  * Created by johnament on 9/3/14.
  */
-@RequestScoped
-public class RequestInvoker {
-    public void inRequestScope() {
-        System.out.println("I'm in a request scope.");
+@ApplicationScoped
+public class Invoker {
+    @StartsRequestScope
+    public void doRequestinvoker() {
+        System.out.println("In app scoped.");
+        CDI.current().select(RequestInvoker.class).get().inRequestScope();
     }
 }

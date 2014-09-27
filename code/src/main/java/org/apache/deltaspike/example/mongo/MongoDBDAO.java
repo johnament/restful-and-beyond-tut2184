@@ -19,9 +19,7 @@
 
 package org.apache.deltaspike.example.mongo;
 
-import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
-import org.apache.log4j.Logger;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
@@ -29,7 +27,6 @@ import org.mongodb.morphia.Morphia;
 import javax.annotation.PostConstruct;
 import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
-import java.lang.reflect.ParameterizedType;
 
 @Vetoed
 public abstract class MongoDBDAO<T> {
@@ -48,11 +45,6 @@ public abstract class MongoDBDAO<T> {
     public Object insert(T t) {
         Key<T> result = this.datastore.save(t);
         return result.getId();
-    }
-
-    private Class<T> getGenericClass() {
-        return (Class<T>) ((ParameterizedType) getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     protected abstract String getDBName();

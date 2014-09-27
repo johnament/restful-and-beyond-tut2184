@@ -16,32 +16,53 @@ John D. Ament
 [.topic.intro]
 == About Me
 
-* Apache DeltaSpike PMC
-* Software Architect @ Sparta Systems
-* CDI 2.0 Expert Group Member
-* Twitter @JohnAment
-
-* Presentation content available at http://bit.ly/j1-tut2184
+|===
+| Apache DeltaSpike PMC | Software Architect @ Sparta Systems
+| CDI 2.0 Expert Group Member | Twitter @JohnAment
+|===
+* Building *microservices* for ten years
+* Presentation content available at *http://bit.ly/j1-tut2184*
 
 |===
-| image:ds-logo.png[DeltaSpikeLogo, 200] | *real graphic pending*
+| image:ds-logo.png[DeltaSpikeLogo, 200] | image:339029-DukeChoice-100x176.png[DeltaSpikeDukesChoice]
 |===
+
+[.topic.intro]
+== Building a Real API
+[.incremental]
+* Deploy a simple API server, easy to configure and start
+* Create a simple course management API
+* Allow for creation and read of courses - save it in a database!
+* Allow people to enroll for a course (free of charge!)
+* Don't allow new enrollment after 5 enrollees
+* Notify consumers of new courses available
+* Notify consumers when enrollment hits 5 for any course
+* We want to track all API requests
 
 [.topic.intro]
 == The Technologies
 [.incremental]
 * *Java EE* Technologies
-* Hibernate (JPA)
 * JBoss Weld (CDI)
 * Apache DeltaSpike (CDI Extensions)
 * JBoss RestEasy (JAX-RS)
 * JBoss Undertow (Servlet & WebSocket)
+* Hibernate ORM (JPA)
+* Hibernate Validator (Bean Validation)
+* Jackson (JSON serialization)
+* MongoDB
 * Arquillian
+
+[.topic]
+== The Server
+* Start a CDI runtime
+* Use Undertow to run a Servlet Container
+* Build a reusable Undertow component to handle class registration
 
 [.topic.intro]
 == Container Control
 
-* The ability to start a CDI container regardless of what impelementation you are using
+* The ability to start a CDI container regardless of what implementation you are using
 
 [.topic.source]
 == Startup.java
@@ -74,6 +95,36 @@ public class Startup {
 --
 
 [.topic.intro]
+== Servlets
+* The core of everything we do in the internet
+* Build a component for registration of Servlets, Filters, Listeners
+* Specifies basic components
+
+[.topic.intro]
+== Application Startup
+* Formally, in CDI, there is no concept of an eagerly instantiated bean
+* You can do start up work in extensions (e.g. bind `EntityManagers` or HTTP connections)
+* In CDI 1.0, only solution was to manually fire an event
+* In CDI 1.1+ new `Initialized` to watch for the creation of scopes
+
+[.topic.source]
+== ApplicationStartup.java
+
+[source,java]
+--
+public void onAppStart(
+    @Observes @Initialized(ApplicationScoped.class)
+    Object object) {
+}
+--
+
+[.topic.intro]
+== Emulating Container Behavior
+
+* In a full blown application server, various contexts will be active
+* We can emulate this in DeltaSpike via `ContextControl`
+
+[.topic.intro]
 == Context Control
 
 * The ability to start and stop contexts on demand
@@ -103,9 +154,35 @@ public class CDIRequestListener implements ServletRequestListener {
 --
 
 [.topic.intro]
+== Configuration Tools
+
+* Look up property values across multiple configuration sources
+* Ability to inject configuration properties in to beans
+* Specify `ConfigSources` as beans
+
+[.topic.source]
+== AppConfig.java
+
+[source,java]
+--
+@ApplicationScoped
+public class AppConfig implements PropertyFileConfig {
+    public String getPropertyFileName() {
+        return "application-configuration.properties";
+    }
+}
+
+@Inject
+@ConfigProperty(name="http.listen.port")
+private Integer httpListenPort;
+
+--
+
+[.topic.intro]
 == Extra Usecases
 
 * You can also write an interceptor to start contexts on demand, based on method invocation.
+* Needed for `RequestScoped` resources
 * Excellent for WebSockets, which don't start Requests on demand
 
 [.topic.source]
@@ -135,14 +212,10 @@ public Object startRequestScope(final InvocationContext ctx) throws Exception {
 --
 
 [.topic.intro]
-== WebSockets Integration
+== Injection Enhancement
 
-[middle.right.incremental]
-* WebSockets JSR has limited CDI integration
-** Most work is *platform specific*
-* No active contexts when methods are invoked
-** Similar to MDBs
-* Poor instance creation integration
+* Without these changes, instances of Servlet Objects (Filter, Listener, WebSockets etc) are just instantiated
+* These factory classes replace how instances are resolved, leveraging scopes to manage scoping of instances
 
 [.topic.source]
 == UndertowCDISupport.java
@@ -176,93 +249,6 @@ public class CDIInstanceHandle<T> implements InstanceHandle<T> {
     public void release() { }
 }
 --
-
-[.topic.intro]
-== WebSocket Enhancement
-
-* Without these changes, instances of WebSockets (and Servlet) are managed by Undertow
-* These factory classes replace how instances are resolved, leveraging scopes to manage scoping of instances
-
-[.topic.source]
-== ResponderServer.java
-
-[source,java]
---
-@ApplicationScoped
-@ServerEndpoint("/serverSocket")
-public class ResponderServer {
-    @OnMessage
-    @StartsRequestScope
-    public void respond(String data, Session session) {
-        try {
-            CDI.current().select(RequestInvoker.class)
-                .get().inRequestScope();
-            session.getBasicRemote().sendText("foo");
-        } catch (Exception e) { }
-    }
-}
---
-
-[.topic.intro]
-== WebSocket Enhancement
-
-* This also works for clients
-* Retrieving the instance via CDI, end up with a single per client program
-
-[.topic.source]
-== WebSocketTestClient.java
-
-[source,java]
---
-public Session connect(String uri) throws IOException, DeploymentException {
-    WebSocketContainer webSocketContainer =
-        ContainerProvider.getWebSocketContainer();
-    URI endpointURI = URI.create(uri);
-    return webSocketContainer
-        .connectToServer(WebSocketTestClient.class,endpointURI);
-}
-
-public void send(String data, Session session) throws IOException {
-    session.getBasicRemote().sendText(data);
-}
---
-
-[.topic.intro]
-== Servlet and WebSocket Review
-
-* Use an introspector (Undertow specific) to control instance creation.
-* Override the WebSocket container to
-
-[.topic.intro]
-== Security Integration
-
-* Interceptor based security
-* Annotation based bindings
-* Method based injection of dependencies
-
-[.topic.source]
-== Team1Authorizer.java
-
-[source,java]
---
-@RequestScoped
-public class Team1Authorizer {
-    @Secures
-    @Team1Binding
-    public boolean isAuthorizedForTeam1(
-        InvocationContext invocationContext,
-        User user) {
-        return user.getGroups().stream()
-            .anyMatch("team1"::equalsIgnoreCase);
-    }
-}
---
-
-[.topic.intro]
-== Security Overview
-* Interceptor is invoked before the method is invoked.
-* If it returns false, or throws an exception, the method is not invoked
-* Typical approach is to bind the logged in user to a RequestScoped bean
 
 [.topic.intro]
 == Persistence & Data Modules
@@ -367,6 +353,7 @@ public void cleanEM(@Disposes EntityManager entityManager) {
 == Simple Querying Support
 * Replaces DAOs
 * Contains a lot of useful built in functionality
+* Save, find, etc
 
 [.topic.source]
 == EmployeeRepository.java
@@ -379,20 +366,183 @@ public interface EmployeeRepository extends
 --
 
 [.topic.intro]
-== Application Startup
-* Formally, in CDI, there is no concept of an eagerly instantiated bean
-* You can do start up work in extensions (e.g. bind `EntityManagers` or HTTP connections)
-* In CDI 1.0, only solution was to manually fire an event
-* In CDI 1.1+ new `Initialized` to watch for the creation of scopes
+== The Basic REST API
+* Leverage what we just put together
+
+[.topic.source]
+== CourseRestAPI.java
+
+[source,java]
+--
+@RequestScoped
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+@Path("/courses")
+@Transactional
+public class CourseRestResource {
+}
+--
 
 [.topic.intro]
-== Building a Real API
-* We want to track all API requests in a separate database.
-* Allow for crud operations against courses
-* Notify consumers of new courses available
-* Allow people to enroll for a course (free of charge!)
-* Notify consumers when enrollment hits 5 for any course
-* Don't allow new enrollment after 5 enrollees
+== WebSockets Integration
+
+[middle.right.incremental]
+* WebSockets JSR has limited CDI integration
+** Most work is *platform specific*
+* No active contexts when methods are invoked
+** Similar to MDBs
+* Poor instance creation integration
+
+[.topic.source]
+== ResponderServer.java
+
+[source,java]
+--
+@ApplicationScoped
+@ServerEndpoint("/serverSocket")
+public class ResponderServer {
+    @OnMessage
+    @StartsRequestScope
+    public void respond(String data, Session session) {
+        try {
+            CDI.current().select(RequestInvoker.class)
+                .get().inRequestScope();
+            session.getBasicRemote().sendText("foo");
+        } catch (Exception e) { }
+    }
+}
+--
+
+[.topic.intro]
+== WebSocket Enhancement
+
+* This also works for clients
+* Retrieving the instance via CDI, end up with a single per client program
+
+[.topic.source]
+== WebSocketTestClient.java
+
+[source,java]
+--
+public Session connect(String uri) throws IOException, DeploymentException {
+    WebSocketContainer webSocketContainer =
+        ContainerProvider.getWebSocketContainer();
+    URI endpointURI = URI.create(uri);
+    return webSocketContainer
+        .connectToServer(WebSocketTestClient.class,endpointURI);
+}
+
+public void send(String data, Session session) throws IOException {
+    session.getBasicRemote().sendText(data);
+}
+--
+
+[.topic.intro]
+== JAX-RS Filters
+* Create a hit when a request comes in
+* When response is being sent back, store the hit
+
+[.topic.source]
+== StoreAPIHitFilter.java
+
+[source,java]
+--
+@ApplicationScoped
+@Provider
+public class StoreAPIHitFilter implements
+    ContainerRequestFilter, ContainerResponseFilter {
+    @Inject
+    private APIHitDAO apiHitDAO;
+    public void filter(ContainerRequestContext requestContext)
+        throws IOException {
+        APIHit hit = new APIHit();
+        hit.setUri(requestContext.getUriInfo().getPath());
+        hit.setStartTime(new Date());
+        requestContext.setProperty("apiHit",hit);
+    }
+    public void filter(ContainerRequestContext requestContext,
+        ContainerResponseContext responseContext)
+         throws IOException {
+        Object hit = requestContext.getProperty("apiHit");
+        if( hit != null ) {
+            APIHit apiHit = (APIHit)hit;
+            apiHit.setEndTime(new Date());
+            apiHitDAO.insert(apiHit);
+        }
+    }
+}
+--
+
+[.topic.intro]
+== MongoDB Support
+
+* Similar to JPA, provide a producer for `MongoClient`
+* Inject that client into DAOs to do work
+
+[.topic.source]
+== MongoProducer.java
+
+[source,java]
+--
+@PostConstruct
+public void start() {
+    List<ServerAddress> serverAddressList = new ArrayList<>();
+    Arrays.stream(mongoConnectionInfo.split(";")).forEach(s -> {
+        String[] hostAndPort = s.split(":");
+        String host = hostAndPort[0];
+        int port = Integer.parseInt(hostAndPort[1]);
+        try {
+            serverAddressList.add(new ServerAddress(host,port));
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+    });
+    this.mongoClient = new MongoClient(serverAddressList);
+}
+@Produces
+@ApplicationScoped
+public MongoClient client() {
+    return this.mongoClient;
+}
+--
+
+[.topic.intro]
+== New Requirement Approaching!!
+
+* Oops, not everyone should be able to create a Course.
+* Students may not create courses
+* Users who are in the coursemanage group may create and maintain courses
+* Only students may enroll in courses
+
+[.topic.intro]
+== Security Integration
+
+* Interceptor based security
+* Annotation based bindings
+* Method based injection of dependencies
+
+[.topic.source]
+== CourseCreateAuthorizer.java
+
+[source,java]
+--
+@RequestScoped
+public class CourseCreateAuthorizer {
+    @Secures
+    @CourseCreateBinding
+    public boolean canEditCourses
+        (InvocationContext invocationContext, User user) {
+        return user.getGroups().stream()
+            .anyMatch("coursemanage"::equalsIgnoreCase);
+    }
+}
+--
+
+[.topic.intro]
+== Security Overview
+* Interceptor is invoked before the method is invoked.
+* If it returns false, or throws an exception, the method is not invoked
+* Typical approach is to bind the logged in user to a RequestScoped bean
 
 [.topic.ending]
 == Thank you!

@@ -21,18 +21,17 @@ package org.apache.deltaspike.example.security;
 
 import org.apache.deltaspike.security.api.authorization.Secures;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.InvocationContext;
-import java.util.function.Predicate;
 
 /**
- * Created by johnament on 9/7/14.
+ * Created by johnament on 9/27/14.
  */
-@RequestScoped
-public class Team1Authorizer {
+@ApplicationScoped
+public class StudentAuthorizer {
     @Secures
-    @Team1Binding
-    public boolean isAuthorizedForTeam1(InvocationContext invocationContext, User user) {
-        return user.getGroups().stream().anyMatch("team1"::equalsIgnoreCase);
+    @StudentBinding
+    public boolean isStudent(InvocationContext invocationContext, User user) {
+        return user.getGroups().stream().anyMatch("students"::equalsIgnoreCase);
     }
 }

@@ -34,7 +34,7 @@ import java.util.Set;
  */
 @ApplicationScoped
 @ApplicationPath("/rest")
-public class RestAPI extends Application {
+public class CourseApplication extends Application {
     @Inject
     private ResteasyCdiExtension resteasyCdiExtension;
 

@@ -17,13 +17,12 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.persistence;
+package org.apache.deltaspike.example.tests.persistence.sh;
 
 import org.apache.deltaspike.cdise.api.ContextControl;
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.config.LogSetup;
-import org.apache.deltaspike.example.tests.employees.Employees;
-import org.apache.deltaspike.example.tests.employees.ShortPersistence;
+import org.apache.deltaspike.example.tests.persistence.Employees;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -36,7 +35,6 @@ import org.junit.runner.RunWith;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.CDI;
 import javax.persistence.EntityManager;
-import java.util.Arrays;
 
 /**
  * Tests JPA functionality within the app.
@@ -65,9 +63,11 @@ public class JPAShortTest {
                 .addPackage(ExampleConfigSource.class.getPackage())
                 .addClasses(Employees.class, ShortPersistence.class);
 
-        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
+        Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
-                .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+                .withTransitivity()
+                .asList(JavaArchive.class)
+                .forEach(jar::merge);
 
 
         jar.addAsManifestResource(new StringAsset(beansXml), "beans.xml");

@@ -17,21 +17,22 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.delegate;
+package org.apache.deltaspike.example.security;
 
-import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
+import org.apache.deltaspike.security.api.authorization.SecurityBindingType;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.CDI;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Created by johnament on 9/3/14.
+ * Created by johnament on 9/27/14.
  */
-@ApplicationScoped
-public class Invoker {
-    @StartsRequestScope
-    public void doRequestinvoker() {
-        System.out.println("In app scoped.");
-        CDI.current().select(RequestInvoker.class).get().inRequestScope();
-    }
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Documented
+@SecurityBindingType
+public @interface StudentBinding {
 }

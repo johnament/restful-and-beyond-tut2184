@@ -24,6 +24,7 @@ import org.apache.deltaspike.example.mongo.APIHitDAO;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseContext;
@@ -38,18 +39,8 @@ import java.util.Date;
 @ApplicationScoped
 @Provider
 public class StoreAPIHitFilter implements ContainerRequestFilter, ContainerResponseFilter {
-    @Override
-    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
-        System.out.println("Filtering response.");
-        Object hit = requestContext.getProperty("apiHit");
-        if( hit != null ) {
-            APIHit apiHit = (APIHit)hit;
-            apiHit.setEndTime(new Date());
-            APIHitDAO apiHitDAO = CDI.current().select(APIHitDAO.class).get();
-            apiHitDAO.insert(apiHit);
-        }
-    }
-
+    @Inject
+    private APIHitDAO apiHitDAO;
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         System.out.println("Filtering request.");
@@ -57,5 +48,16 @@ public class StoreAPIHitFilter implements ContainerRequestFilter, ContainerRespo
         hit.setUri(requestContext.getUriInfo().getPath());
         hit.setStartTime(new Date());
         requestContext.setProperty("apiHit",hit);
+    }
+
+    @Override
+    public void filter(ContainerRequestContext requestContext, ContainerResponseContext responseContext) throws IOException {
+        System.out.println("Filtering response.");
+        Object hit = requestContext.getProperty("apiHit");
+        if( hit != null ) {
+            APIHit apiHit = (APIHit)hit;
+            apiHit.setEndTime(new Date());
+            apiHitDAO.insert(apiHit);
+        }
     }
 }

@@ -17,14 +17,26 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.employees;
+package org.apache.deltaspike.example.tests.persistence.tx;
 
-import org.apache.deltaspike.data.api.EntityRepository;
-import org.apache.deltaspike.data.api.Repository;
+import org.apache.deltaspike.example.tests.persistence.Employees;
+import org.apache.deltaspike.jpa.api.transaction.Transactional;
+
+import javax.enterprise.inject.spi.CDI;
+import javax.persistence.EntityManager;
 
 /**
  * Created by johnament on 9/11/14.
  */
-@Repository(forEntity = Employees.class)
-public interface EmployeeRepository extends EntityRepository<Employees,Integer> {
+@Transactional
+public class TransactionBean {
+
+    public void createEmployee() {
+        Employees e = new Employees();
+        e.setFirstName("Bob");
+        e.setLastName("Hope");
+        EntityManager em = CDI.current().select(EntityManager.class).get();
+        Employees e2 = em.merge(e);
+        System.out.println("Employee id :" + e2.getId());
+    }
 }

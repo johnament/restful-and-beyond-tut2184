@@ -17,11 +17,8 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.application;
+package org.apache.deltaspike.example.tests.application.arq;
 
-import org.apache.deltaspike.cdise.api.CdiContainer;
-import org.apache.deltaspike.cdise.api.CdiContainerLoader;
-import org.apache.deltaspike.cdise.api.ContextControl;
 import org.apache.deltaspike.example.Listener;
 import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
 import org.apache.deltaspike.example.components.interceptor.RequestScopeInterceptor;
@@ -29,31 +26,26 @@ import org.apache.deltaspike.example.components.servlet.WebFilterLiteral;
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.components.websocket.ResponderServer;
 import org.apache.deltaspike.example.config.AppConfig;
-import org.apache.deltaspike.example.delegate.Invoker;
-import org.apache.deltaspike.example.delegate.RequestInvoker;
+import org.apache.deltaspike.example.requestDelegate.RequestInvoker;
 import org.apache.deltaspike.example.jpa.Course;
 import org.apache.deltaspike.example.jpa.Enrollment;
 import org.apache.deltaspike.example.json.CourseSerializer;
 import org.apache.deltaspike.example.mongo.APIHit;
-import org.apache.deltaspike.example.rest.APIRestResource;
+import org.apache.deltaspike.example.rest.APILookupResource;
 import org.apache.deltaspike.example.rest.Courses;
 import org.apache.deltaspike.example.rest.Enrollments;
-import org.apache.deltaspike.example.restAdmin.AdminApplication;
 import org.apache.deltaspike.example.restAdmin.AdminResource;
 import org.apache.deltaspike.example.se.ApplicationStartupEvent;
 import org.apache.deltaspike.example.security.AccessDeniedExceptionMapper;
 import org.apache.deltaspike.example.socket.CourseServer;
-import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
-import org.apache.deltaspike.example.tests.deployers.WebSocketDeployer;
+import org.apache.deltaspike.example.tests.application.CourseClient;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -69,7 +61,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -108,7 +99,7 @@ public class CourseCrudArgTest {
                         Course.class.getPackage(),
                         CourseSerializer.class.getPackage(),
                         APIHit.class.getPackage(),
-                        APIRestResource.class.getPackage(),
+                        APILookupResource.class.getPackage(),
                         AdminResource.class.getPackage(),
                         ApplicationStartupEvent.class.getPackage(),
                         AccessDeniedExceptionMapper.class.getPackage(),
@@ -118,9 +109,11 @@ public class CourseCrudArgTest {
                 .addClass(CourseClient.class)
                 .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
                 ;
-        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
+        Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
-                .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+                .withTransitivity()
+                .asList(JavaArchive.class)
+                .forEach(jar::merge);
         return jar;
     }
 

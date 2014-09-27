@@ -23,8 +23,7 @@ import org.apache.deltaspike.core.api.config.ConfigProperty;
 import org.apache.deltaspike.example.components.servlet.RequestScopedServletRequestListener;
 import org.apache.deltaspike.example.components.servlet.WebServletLiteral;
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
-import org.apache.deltaspike.example.json.CourseSerializer;
-import org.apache.deltaspike.example.rest.RestAPI;
+import org.apache.deltaspike.example.rest.CourseApplication;
 import org.apache.deltaspike.example.socket.CourseServer;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.cdi.CdiInjectorFactory;
@@ -91,7 +90,7 @@ public class Listener {
         ResteasyDeployment deployment = new ResteasyDeployment();
         deployment.setInjectorFactoryClass(CdiInjectorFactory.class.getName());
         // by setting the application, we assume the application will list out all resources and providers
-        deployment.setApplicationClass(RestAPI.class.getName());
+        deployment.setApplicationClass(CourseApplication.class.getName());
 
         return deployment;
     }

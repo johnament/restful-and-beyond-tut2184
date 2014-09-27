@@ -17,7 +17,7 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.employees;
+package org.apache.deltaspike.example.tests.persistence;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

@@ -17,12 +17,11 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.employees;
+package org.apache.deltaspike.example.tests.persistence.sh;
 
-import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
 import org.apache.log4j.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
@@ -32,49 +31,18 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
- * A component for starting and stopping entity managers.
+ * Created by johnament on 9/11/14.
  */
 @ApplicationScoped
 @Vetoed
-public class LongPersistence {
-    private static final Logger logger = Logger.getLogger(LongPersistence.class);
+public class ShortPersistence {
     @Inject
-    @ConfigProperty(name = "default.persistence.jdbc.url")
-    private String url;
-
-    @Inject
-    @ConfigProperty(name = "default.persistence.jdbc.user")
-    private String user;
-
-    @Inject
-    @ConfigProperty(name = "default.persistence.jdbc.password")
-    private String password;
-
-    @Inject
-    @ConfigProperty(name = "default.persistence.jdbc.driver")
-    private String driver;
-
-    @Inject
-    @ConfigProperty(name = "default.persistence.jdbc.schemagen")
-    private String schemaGen;
-
+    @PersistenceUnitName("DefaultApp")
     private EntityManagerFactory entityManagerFactory;
-    @PostConstruct
-    public void init() {
-        Map<String,String> properties = new HashMap<>();
-        properties.put("javax.persistence.jdbc.driver",driver);
-        properties.put("javax.persistence.jdbc.url",url);
-        properties.put("javax.persistence.jdbc.user",user);
-        properties.put("javax.persistence.jdbc.password",password);
-        properties.put("javax.persistence.schema-generation.database.action",schemaGen);
-        entityManagerFactory = Persistence.createEntityManagerFactory("DefaultApp",properties);
-        logger.info("Started database connection using entityManagerFactory "+entityManagerFactory);
-    }
+
+    private final Logger logger = Logger.getLogger(ShortPersistence.class);
 
     @Produces
     @RequestScoped

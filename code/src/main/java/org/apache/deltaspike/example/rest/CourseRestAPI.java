@@ -48,7 +48,7 @@ import java.util.Set;
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/courses")
 @Transactional
-public class CourseRestResource {
+public class CourseRestAPI {
     @Inject
     private CourseRepository courseRepository;
 
@@ -88,23 +88,32 @@ public class CourseRestResource {
     public Enrollment enroll(@PathParam("courseId") Integer courseId,
                              Enrollment enrollment) {
         Course course = courseRepository.findCourse(courseId);
-        Set<ConstraintViolation<Course>> courseConstraints = validator.validate(course, Course.NewEnrollment.class);
-        if(courseConstraints.isEmpty()) {
-            enrollment.setCourse(course);
-            if(course.getEnrollmentList().size() == 4) {
-                String msg = String.format("Course %s has reached max enrollments",courseId);
-                this.clientConnectionComponent.notifyAllSessions(msg);
-            }
-            return this.enrollmentRepository.save(enrollment);
-        }
-        else {
-            StringBuilder messages = new StringBuilder();
-            for(ConstraintViolation<Course> cv : courseConstraints) {
-                messages.append(cv.getMessage());
-            }
-            throw new RuntimeException(messages.toString());
-        }
+        enrollment.setCourse(course);
+        return this.enrollmentRepository.save(enrollment);
     }
+
+//    @POST
+//    @Path("/{courseId}/enrollments")
+//    public Enrollment enroll(@PathParam("courseId") Integer courseId,
+//                             Enrollment enrollment) {
+//        Course course = courseRepository.findCourse(courseId);
+//        Set<ConstraintViolation<Course>> courseConstraints = validator.validate(course, Course.NewEnrollment.class);
+//        if(courseConstraints.isEmpty()) {
+//            enrollment.setCourse(course);
+//            if(course.getEnrollmentList().size() == 4) {
+//                String msg = String.format("Course %s has reached max enrollments",courseId);
+//                this.clientConnectionComponent.notifyAllSessions(msg);
+//            }
+//            return this.enrollmentRepository.save(enrollment);
+//        }
+//        else {
+//            StringBuilder messages = new StringBuilder();
+//            for(ConstraintViolation<Course> cv : courseConstraints) {
+//                messages.append(cv.getMessage());
+//            }
+//            throw new RuntimeException(messages.toString());
+//        }
+//    }
 
     @PUT
     @Path("/{courseId}")

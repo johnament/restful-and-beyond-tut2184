@@ -53,17 +53,14 @@ public class MongoProducer {
     @PostConstruct
     public void start() {
         List<ServerAddress> serverAddressList = new ArrayList<>();
-        Arrays.stream(mongoConnectionInfo.split(";")).forEach(new Consumer<String>() {
-            @Override
-            public void accept(String s) {
-                String[] hostAndPort = s.split(":");
-                String host = hostAndPort[0];
-                int port = Integer.parseInt(hostAndPort[1]);
-                try {
-                    serverAddressList.add(new ServerAddress(host,port));
-                } catch (UnknownHostException e) {
-                    e.printStackTrace();
-                }
+        Arrays.stream(mongoConnectionInfo.split(";")).forEach(s -> {
+            String[] hostAndPort = s.split(":");
+            String host = hostAndPort[0];
+            int port = Integer.parseInt(hostAndPort[1]);
+            try {
+                serverAddressList.add(new ServerAddress(host,port));
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
             }
         });
         this.mongoClient = new MongoClient(serverAddressList);

@@ -17,52 +17,42 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.employees;
+package org.apache.deltaspike.example.jpa;
 
 import org.apache.deltaspike.jpa.api.entitymanager.PersistenceUnitName;
+import org.apache.deltaspike.jpa.api.transaction.TransactionScoped;
 import org.apache.log4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
-import javax.enterprise.inject.Vetoed;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 
 /**
  * Created by johnament on 9/11/14.
  */
 @ApplicationScoped
-@Vetoed
-public class ShortPersistence {
+public class EntityManagerProducer {
     @Inject
     @PersistenceUnitName("DefaultApp")
     private EntityManagerFactory entityManagerFactory;
 
-    private final Logger logger = Logger.getLogger(ShortPersistence.class);
+    private final Logger logger = Logger.getLogger(EntityManagerProducer.class);
 
     @Produces
-    @RequestScoped
+    @TransactionScoped
     public EntityManager entityManager() {
         logger.info("Creating an entity manager.");
         EntityManager em = entityManagerFactory.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-        et.begin();
         return em;
     }
 
     public void cleanEM(@Disposes EntityManager entityManager) {
         logger.info("Disposing an entity manager "+entityManager);
-        EntityTransaction et = entityManager.getTransaction();
-        if(et.getRollbackOnly()) {
-            et.rollback();
+        if(entityManager.isOpen()) {
+            entityManager.close();
         }
-        else {
-            et.commit();
-        }
-        entityManager.close();
     }
 }

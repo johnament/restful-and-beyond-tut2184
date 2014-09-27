@@ -17,13 +17,12 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.tests.persistence;
+package org.apache.deltaspike.example.tests.persistence.tx;
 
-import org.apache.deltaspike.cdise.api.ContextControl;
+import org.apache.deltaspike.example.jpa.EntityManagerProducer;
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.config.LogSetup;
-import org.apache.deltaspike.example.tests.employees.Employees;
-import org.apache.deltaspike.example.tests.employees.LongPersistence;
+import org.apache.deltaspike.example.tests.persistence.Employees;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -33,57 +32,53 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.CDI;
-import javax.persistence.EntityManager;
-import java.util.Arrays;
 
 /**
- * Tests JPA functionality within the app.
+ * Created by johnament on 9/11/14.
  */
 @RunWith(Arquillian.class)
-public class JPALongTest {
+public class JPATransactionTest {
     @Deployment
     public static JavaArchive createArchive() {
         LogSetup.configureLogger();
+        String interceptor = "    <interceptors>\n" +
+                "        <class>org.apache.deltaspike.jpa.impl.transaction.TransactionalInterceptor</class>\n" +
+                "    </interceptors>";
+
         String beansXml = "<beans xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"\n" +
                 "       xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                 "       xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee\n" +
                 "\t\thttp://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd\"\n" +
-                "       bean-discovery-mode=\"all\">\n" +
+                "       bean-discovery-mode=\"all\">\n" + interceptor +
                 "</beans>";
 
         String[] gavs = new String[]{"org.apache.deltaspike.core:deltaspike-core-api",
                 "org.apache.deltaspike.core:deltaspike-core-impl",
-                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api",
-                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld",
                 "org.apache.deltaspike.modules:deltaspike-jpa-module-api",
                 "org.apache.deltaspike.modules:deltaspike-jpa-module-impl",
+                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api",
+                "org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld",
                 "org.apache.deltaspike.modules:deltaspike-data-module-api",
                 "org.apache.deltaspike.modules:deltaspike-data-module-impl"};
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar")
                 .addPackage(ExampleConfigSource.class.getPackage())
-                .addClasses(Employees.class, LongPersistence.class);
+                .addClasses(Employees.class, EntityManagerProducer.class, TransactionBean.class);
 
-        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
+        Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
-                .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+                .withTransitivity().asList(JavaArchive.class)
+                .forEach(jar::merge);
 
 
+        jar.delete("META-INF/beans.xml");
         jar.addAsManifestResource(new StringAsset(beansXml), "beans.xml");
         return jar;
     }
 
     @Test
     public void testCreateEmployee() {
-        ContextControl contextControl = CDI.current().select(ContextControl.class).get();
-        contextControl.startContext(RequestScoped.class);
-        Employees e = new Employees();
-        e.setFirstName("Bob");
-        e.setLastName("Hope");
-        EntityManager em = CDI.current().select(EntityManager.class).get();
-        Employees e2 = em.merge(e);
-        System.out.println("Employee id :"+e2.getId());
-        contextControl.stopContext(RequestScoped.class);
+        TransactionBean txBean = CDI.current().select(TransactionBean.class).get();
+        txBean.createEmployee();
     }
 }

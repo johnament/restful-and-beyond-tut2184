@@ -17,28 +17,22 @@
  *     under the License.
  */
 
-package org.apache.deltaspike.example.security;
+package org.apache.deltaspike.example.tests.persistence;
 
-import javax.enterprise.context.RequestScoped;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import org.apache.deltaspike.data.api.EntityRepository;
+import org.apache.deltaspike.data.api.Query;
+import org.apache.deltaspike.data.api.QueryParam;
+import org.apache.deltaspike.data.api.Repository;
 
-import static java.lang.String.format;
+import java.util.List;
 
 /**
- * Created by johnament on 9/7/14.
+ * Created by johnament on 9/11/14.
  */
-@RequestScoped
-@Path("/secured/foo")
-public class SecuredResource {
-    @Inject
-    private User user;
-    @GET
-    @CourseCreateBinding
-    @Produces("text/plain")
-    public String greet() {
-        return format("Hello, %s!",user.getUsername());
-    }
+@Repository(forEntity = Employees.class)
+public interface EmployeeRepository extends EntityRepository<Employees,Integer> {
+
+    @Query("select e from Employees e where lastName like :name")
+    public List<Employees> findByname(@QueryParam("name") String name);
+
 }

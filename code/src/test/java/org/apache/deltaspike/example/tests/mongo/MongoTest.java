@@ -47,9 +47,11 @@ public class MongoTest {
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class).addPackage(MongoProducer.class.getPackage())
                 .addClass(ExampleConfigSource.class)
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
+        Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve("org.apache.deltaspike.core:deltaspike-core-api", "org.apache.deltaspike.core:deltaspike-core-impl")
-                .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+                .withTransitivity()
+                .asList(JavaArchive.class)
+                .forEach(jar::merge);
 
         return jar;
     }

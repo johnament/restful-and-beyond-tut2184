@@ -68,9 +68,9 @@ public class StartupEventTest {
                 .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
                 .addClasses(GreeterServlet.class, UndertowRestDeployer.class, UndertowServletDeployer.class);
 
-        Arrays.stream(Maven.resolver().offline().loadPomFromFile("pom.xml")
+        Maven.resolver().offline().loadPomFromFile("pom.xml")
                 .resolve(gavs)
-                .withTransitivity().as(JavaArchive.class)).forEach(jar::merge);
+                .withTransitivity().asList(JavaArchive.class).forEach(jar::merge);
         return jar;
     }
 

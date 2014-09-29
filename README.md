@@ -5,3 +5,5 @@ TUT2184
 
 Content of the presentation is Apache v2 License.
 DZslides is WTF license.
+
+For content after the talk, please use the branch `post-talk`

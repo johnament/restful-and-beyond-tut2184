@@ -40,10 +40,7 @@ public class ResponderServer {
     @StartsRequestScope
     public void respond(String data, Session session) {
         System.out.println("Server Received "+data);
-        try {
-            CDI.current().select(RequestInvoker.class).get().inRequestScope();
-            session.getBasicRemote().sendText("foo "+data);
-
-        } catch (Exception e) { }
+        RequestInvoker requestInvoker = CDI.current().select(RequestInvoker.class).get();
+        requestInvoker.inRequestScope(session,data);
     }
 }

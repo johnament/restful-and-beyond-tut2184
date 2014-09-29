@@ -49,7 +49,6 @@ public class WebSocketTestClient {
     public void send(String data, Session session) throws IOException {
         session.getBasicRemote().sendText(data);
     }
-// look at 17
     
     @OnMessage
     @StartsRequestScope

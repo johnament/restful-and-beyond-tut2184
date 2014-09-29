@@ -376,7 +376,7 @@ public interface EmployeeRepository extends
 @Consumes(MediaType.APPLICATION_JSON)
 @Path("/courses")
 @Transactional
-public class CourseRestResource {
+public class CourseRestAPI {
 }
 --
 
@@ -398,16 +398,20 @@ public class CourseRestResource {
 @ApplicationScoped
 @ServerEndpoint("/serverSocket")
 public class ResponderServer {
+    @PostConstruct
+    public void init() {
+        System.out.println("Created server...");
+    }
     @OnMessage
     @StartsRequestScope
     public void respond(String data, Session session) {
-        try {
-            CDI.current().select(RequestInvoker.class)
-                .get().inRequestScope();
-            session.getBasicRemote().sendText("foo");
-        } catch (Exception e) { }
+        System.out.println("Server Received "+data);
+        RequestInvoker requestInvoker = CDI.current()
+            .select(RequestInvoker.class).get();
+        requestInvoker.inRequestScope(session,data);
     }
 }
+
 --
 
 [.topic.intro]

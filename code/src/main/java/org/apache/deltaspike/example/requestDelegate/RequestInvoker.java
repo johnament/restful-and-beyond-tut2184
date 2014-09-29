@@ -20,10 +20,15 @@
 package org.apache.deltaspike.example.requestDelegate;
 
 import javax.enterprise.context.RequestScoped;
+import javax.websocket.Session;
+import java.io.IOException;
 
 @RequestScoped
 public class RequestInvoker {
-    public void inRequestScope() {
+    public void inRequestScope(Session session, String data) {
         System.out.println("I'm in a request scope.");
+        try {
+            session.getBasicRemote().sendText("foo "+data);
+        } catch (IOException e) { }
     }
 }

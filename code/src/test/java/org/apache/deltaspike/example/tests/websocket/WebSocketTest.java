@@ -26,7 +26,6 @@ import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.components.websocket.ResponderServer;
 import org.apache.deltaspike.example.components.websocket.WebSocketTestClient;
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
-import org.apache.deltaspike.example.requestDelegate.Invoker;
 import org.apache.deltaspike.example.requestDelegate.RequestInvoker;
 import org.apache.deltaspike.example.restAdmin.AdminApplication;
 import org.apache.deltaspike.example.tests.deployers.WebSocketDeployer;
@@ -68,7 +67,7 @@ public class WebSocketTest {
                 .addPackage(ResponderServer.class.getPackage())
                 .addPackage(WebSocketDeployer.class.getPackage())
                 .addPackage(UndertowComponent.class.getPackage())
-                .addClasses(StartsRequestScope.class, RequestScopeInterceptor.class, Invoker.class, RequestInvoker.class)
+                .addClasses(StartsRequestScope.class, RequestScopeInterceptor.class, RequestInvoker.class)
                 .addAsManifestResource(new StringAsset(beansXml), "beans.xml")
                 ;
         Maven.resolver().offline().loadPomFromFile("pom.xml")

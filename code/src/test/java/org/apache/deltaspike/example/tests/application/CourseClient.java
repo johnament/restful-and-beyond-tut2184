@@ -27,9 +27,6 @@ import javax.websocket.Session;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by johnament on 9/23/14.
- */
 @ApplicationScoped
 @ClientEndpoint
 public class CourseClient {

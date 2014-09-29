@@ -31,9 +31,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import java.util.List;
 
-/**
- * Created by johnament on 9/21/14.
- */
 @Entity
 @Table(name="courses")
 @JsonSerialize(using = CourseSerializer.class)

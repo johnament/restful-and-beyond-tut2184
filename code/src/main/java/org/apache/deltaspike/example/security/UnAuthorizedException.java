@@ -19,9 +19,6 @@
 
 package org.apache.deltaspike.example.security;
 
-/**
- * Created by johnament on 9/7/14.
- */
 public class UnAuthorizedException extends RuntimeException {
     public UnAuthorizedException() {
     }

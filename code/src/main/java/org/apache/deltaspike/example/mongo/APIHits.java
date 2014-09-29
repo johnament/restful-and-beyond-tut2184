@@ -21,9 +21,6 @@ package org.apache.deltaspike.example.mongo;
 
 import java.util.List;
 
-/**
- * Created by johnament on 9/21/14.
- */
 public class APIHits {
     private List<APIHit> apiHitList;
 

@@ -24,9 +24,6 @@ import org.apache.deltaspike.security.api.authorization.Secures;
 import javax.enterprise.context.ApplicationScoped;
 import javax.interceptor.InvocationContext;
 
-/**
- * Created by johnament on 9/27/14.
- */
 @ApplicationScoped
 public class StudentAuthorizer {
     @Secures

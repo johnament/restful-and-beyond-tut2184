@@ -27,9 +27,6 @@ import org.apache.deltaspike.data.api.SingleResultType;
 
 import java.util.List;
 
-/**
- * Created by johnament on 9/21/14.
- */
 @Repository(forEntity = Course.class)
 public interface CourseRepository extends EntityRepository<Course,Integer>{
     @Query(value = "select c from Course c left outer join fetch c.enrollmentList where c.courseId = :courseId",

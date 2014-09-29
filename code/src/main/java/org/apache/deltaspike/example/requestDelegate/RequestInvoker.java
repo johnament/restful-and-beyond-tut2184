@@ -21,9 +21,6 @@ package org.apache.deltaspike.example.requestDelegate;
 
 import javax.enterprise.context.RequestScoped;
 
-/**
- * Created by johnament on 9/3/14.
- */
 @RequestScoped
 public class RequestInvoker {
     public void inRequestScope() {

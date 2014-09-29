@@ -31,9 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * Created by johnament on 9/7/14.
- */
 @ApplicationScoped
 public class UserManager {
     private Properties users;

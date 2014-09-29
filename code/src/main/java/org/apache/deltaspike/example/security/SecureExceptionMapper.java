@@ -19,13 +19,12 @@
 
 package org.apache.deltaspike.example.security;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-/**
- * Created by johnament on 9/7/14.
- */
+@ApplicationScoped
 @Provider
 public class SecureExceptionMapper implements ExceptionMapper<Exception> {
     @Override

@@ -34,9 +34,6 @@ import org.junit.runner.RunWith;
 
 import javax.enterprise.inject.spi.CDI;
 
-/**
- * Created by johnament on 9/11/14.
- */
 @RunWith(Arquillian.class)
 public class JPATransactionTest {
     @Deployment

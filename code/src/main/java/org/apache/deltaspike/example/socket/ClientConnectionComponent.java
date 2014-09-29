@@ -25,9 +25,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by johnament on 9/23/14.
- */
 @ApplicationScoped
 public class ClientConnectionComponent {
     private Map<String,Session> sessionMap = new HashMap<>();

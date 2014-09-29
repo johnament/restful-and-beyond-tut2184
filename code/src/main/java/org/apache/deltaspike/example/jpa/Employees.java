@@ -25,9 +25,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-/**
- * JPA Entity for employees.
- */
 @Entity
 @Table(name="employees")
 public class Employees {

@@ -25,9 +25,6 @@ import org.mongodb.morphia.annotations.Id;
 
 import java.util.Date;
 
-/**
- * Created by johnament on 9/14/14.
- */
 @Entity("hits")
 public class APIHit {
     @Id

@@ -35,9 +35,6 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 import java.util.Date;
 
-/**
- * Created by johnament on 9/14/14.
- */
 @RunWith(Arquillian.class)
 public class MongoTest {
     @Deployment

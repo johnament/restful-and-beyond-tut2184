@@ -24,9 +24,6 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 
 import java.util.List;
 
-/**
- * Created by johnament on 9/27/14.
- */
 public class TestUtils {
     public static List<JavaArchive> resolveListOfArchives(String...gavs) {
         return Maven.resolver().offline().loadPomFromFile("pom.xml")

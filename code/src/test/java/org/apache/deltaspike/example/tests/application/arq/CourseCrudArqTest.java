@@ -64,9 +64,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by johnament on 9/21/14.
- */
 @RunWith(Arquillian.class)
 public class CourseCrudArqTest {
     @Deployment

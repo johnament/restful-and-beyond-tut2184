@@ -34,9 +34,6 @@ import javax.persistence.Transient;
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 
-/**
- * Created by johnament on 9/21/14.
- */
 @Entity
 @Table(name="enrollment")
 @JsonSerialize(using = EnrollmentSerializer.class)

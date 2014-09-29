@@ -27,9 +27,6 @@ import javax.ws.rs.Produces;
 
 import static java.lang.String.format;
 
-/**
- * Created by johnament on 9/7/14.
- */
 @RequestScoped
 @Path("/secured/foo")
 public class SecuredResource {

@@ -37,9 +37,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-/**
- * Created by johnament on 9/14/14.
- */
 @ApplicationScoped
 public class MongoProducer {
     @Inject

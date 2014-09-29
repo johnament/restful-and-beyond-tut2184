@@ -32,9 +32,6 @@ import javax.websocket.Session;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
-/**
- * Created by johnament on 9/3/14.
- */
 @ApplicationScoped
 @ClientEndpoint
 public class WebSocketTestClient {

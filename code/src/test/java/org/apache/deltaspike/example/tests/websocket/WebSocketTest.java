@@ -48,9 +48,6 @@ import javax.websocket.WebSocketContainer;
 import java.io.IOException;
 import java.net.URI;
 
-/**
- * Created by johnament on 9/3/14.
- */
 @RunWith(Arquillian.class)
 public class WebSocketTest {
     @Deployment

@@ -25,9 +25,6 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import javax.enterprise.inject.spi.CDI;
 import javax.persistence.EntityManager;
 
-/**
- * Created by johnament on 9/11/14.
- */
 @Transactional
 public class TransactionBean {
 

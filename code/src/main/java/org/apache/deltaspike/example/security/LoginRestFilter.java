@@ -27,9 +27,6 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.util.Base64;
 
-/**
- * Created by johnament on 9/7/14.
- */
 @Provider
 @RequestScoped
 public class LoginRestFilter implements ContainerRequestFilter{

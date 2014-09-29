@@ -23,9 +23,6 @@ import org.apache.deltaspike.example.jpa.Course;
 
 import java.util.List;
 
-/**
- * Created by johnament on 9/21/14.
- */
 public class Courses {
     private List<Course> courses;
 

@@ -36,9 +36,6 @@ import org.junit.runner.RunWith;
 import javax.inject.Inject;
 import java.util.List;
 
-/**
- * Created by johnament on 9/11/14.
- */
 @RunWith(Arquillian.class)
 public class JPATransactionFullTest {
     @Deployment

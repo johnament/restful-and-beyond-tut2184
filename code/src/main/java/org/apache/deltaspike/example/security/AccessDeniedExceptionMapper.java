@@ -26,9 +26,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-/**
- * Created by johnament on 9/8/14.
- */
 @ApplicationScoped
 @Provider
 public class AccessDeniedExceptionMapper implements ExceptionMapper<AccessDeniedException> {

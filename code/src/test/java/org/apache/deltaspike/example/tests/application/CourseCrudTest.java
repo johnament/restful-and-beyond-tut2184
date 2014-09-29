@@ -45,9 +45,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by johnament on 9/21/14.
- */
 public class CourseCrudTest {
     private static CdiContainer cdiContainer;
     private static ContextControl contextControl;

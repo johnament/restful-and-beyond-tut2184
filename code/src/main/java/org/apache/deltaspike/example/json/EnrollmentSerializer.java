@@ -12,9 +12,6 @@ import org.codehaus.jackson.map.SerializerProvider;
 
 import java.io.IOException;
 
-/**
- * Created by johnament on 9/22/14.
- */
 public class EnrollmentSerializer extends JsonSerializer<Enrollment> {
     @Override
     public void serialize(Enrollment enrollment, JsonGenerator jsonGenerator, SerializerProvider serializerProvider)

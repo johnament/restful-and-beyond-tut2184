@@ -33,9 +33,6 @@ import javax.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.util.Date;
 
-/**
- * Created by johnament on 9/21/14.
- */
 @ApplicationScoped
 @Provider
 public class StoreAPIHitFilter implements ContainerRequestFilter, ContainerResponseFilter {

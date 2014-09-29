@@ -24,9 +24,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-/**
- * Created by johnament on 9/23/14.
- */
 @ApplicationScoped
 @Provider
 public class RuntimeExceptionMapper implements ExceptionMapper<RuntimeException>{

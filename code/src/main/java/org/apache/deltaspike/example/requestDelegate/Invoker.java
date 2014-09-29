@@ -24,9 +24,6 @@ import org.apache.deltaspike.example.components.annotations.StartsRequestScope;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.CDI;
 
-/**
- * Created by johnament on 9/3/14.
- */
 @ApplicationScoped
 public class Invoker {
     @StartsRequestScope

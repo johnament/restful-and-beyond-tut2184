@@ -23,9 +23,6 @@ import javax.enterprise.context.RequestScoped;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * Created by johnament on 9/7/14.
- */
 @RequestScoped
 public class User {
     private String username;

@@ -31,9 +31,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
 
-/**
- * Created by johnament on 9/21/14.
- */
 @Path("/api")
 @Produces(MediaType.APPLICATION_JSON)
 @RequestScoped

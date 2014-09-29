@@ -23,9 +23,6 @@ import org.apache.deltaspike.example.jpa.Enrollment;
 
 import java.util.List;
 
-/**
- * Created by johnament on 9/21/14.
- */
 public class Enrollments {
     private List<Enrollment> enrollmentList;
 

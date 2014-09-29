@@ -29,9 +29,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.core.Application;
 import java.util.Set;
 
-/**
- * Created by johnament on 9/7/14.
- */
 @ApplicationPath("/")
 @ApplicationScoped
 public class SecureApplication extends Application {

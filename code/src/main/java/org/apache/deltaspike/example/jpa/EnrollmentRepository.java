@@ -25,9 +25,6 @@ import org.apache.deltaspike.data.api.Repository;
 
 import java.util.List;
 
-/**
- * Created by johnament on 9/21/14.
- */
 @Repository(forEntity = Enrollment.class)
 public interface EnrollmentRepository extends EntityRepository<Enrollment,Integer>{
     @Query("select e from Enrollment e where e.course = :course")

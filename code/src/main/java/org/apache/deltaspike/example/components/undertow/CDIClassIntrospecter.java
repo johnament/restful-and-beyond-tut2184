@@ -26,9 +26,6 @@ import io.undertow.servlet.api.InstanceHandle;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.spi.CDI;
 
-/**
- * Created by johnament on 9/3/14.
- */
 @ApplicationScoped
 public class CDIClassIntrospecter implements ClassIntrospecter {
     @Override

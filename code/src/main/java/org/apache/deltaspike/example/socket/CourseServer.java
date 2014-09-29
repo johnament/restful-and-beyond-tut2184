@@ -27,9 +27,6 @@ import javax.websocket.OnOpen;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-/**
- * Created by johnament on 9/23/14.
- */
 @ApplicationScoped
 @ServerEndpoint("/courseServer")
 public class CourseServer {

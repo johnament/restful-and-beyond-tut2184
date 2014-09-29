@@ -41,9 +41,6 @@ import javax.servlet.annotation.WebServlet;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by johnament on 9/13/14.
- */
 @ApplicationScoped
 public class Listener {
     @Inject

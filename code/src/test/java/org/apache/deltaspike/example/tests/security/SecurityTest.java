@@ -42,9 +42,6 @@ import javax.ws.rs.core.Response;
 import java.util.Arrays;
 import java.util.Base64;
 
-/**
- * Created by johnament on 9/7/14.
- */
 @RunWith(Arquillian.class)
 public class SecurityTest {
     @Deployment

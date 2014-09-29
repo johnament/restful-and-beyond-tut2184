@@ -24,9 +24,6 @@ import org.mongodb.morphia.query.Query;
 import javax.enterprise.context.ApplicationScoped;
 import java.util.List;
 
-/**
- * Created by johnament on 9/14/14.
- */
 @ApplicationScoped
 public class APIHitDAO extends MongoDBDAO<APIHit> {
     @Override

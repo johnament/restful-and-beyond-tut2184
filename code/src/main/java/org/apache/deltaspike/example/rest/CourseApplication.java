@@ -29,9 +29,6 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import java.util.Set;
 
-/**
- * Created by johnament on 9/13/14.
- */
 @ApplicationScoped
 @ApplicationPath("/rest")
 public class CourseApplication extends Application {

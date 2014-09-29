@@ -32,9 +32,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
-/**
- * Created by johnament on 9/11/14.
- */
 @ApplicationScoped
 @Vetoed
 public class ShortPersistence {

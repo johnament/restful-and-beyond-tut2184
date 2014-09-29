@@ -29,9 +29,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
-/**
- * Created by johnament on 9/3/14.
- */
 @ApplicationScoped
 public class WebSocketDeployer {
     @Inject

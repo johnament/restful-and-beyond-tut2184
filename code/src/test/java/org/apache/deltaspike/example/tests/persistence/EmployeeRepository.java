@@ -27,9 +27,6 @@ import org.apache.deltaspike.example.jpa.Employees;
 
 import java.util.List;
 
-/**
- * Created by johnament on 9/11/14.
- */
 @Repository(forEntity = Employees.class)
 public interface EmployeeRepository extends EntityRepository<Employees,Integer> {
 

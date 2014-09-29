@@ -29,9 +29,6 @@ import javax.websocket.OnMessage;
 import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 
-/**
- * Created by johnament on 9/3/14.
- */
 @ApplicationScoped
 @ServerEndpoint("/serverSocket")
 public class ResponderServer {

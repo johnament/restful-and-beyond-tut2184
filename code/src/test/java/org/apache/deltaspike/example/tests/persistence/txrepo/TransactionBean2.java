@@ -26,9 +26,6 @@ import org.apache.deltaspike.jpa.api.transaction.Transactional;
 import javax.inject.Inject;
 import java.util.List;
 
-/**
- * Created by johnament on 9/11/14.
- */
 @Transactional
 public class TransactionBean2 {
 

@@ -30,9 +30,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-/**
- * Created by johnament on 9/11/14.
- */
 @ApplicationScoped
 public class EntityManagerProducer {
     @Inject

@@ -23,9 +23,6 @@ import org.apache.deltaspike.core.api.config.PropertyFileConfig;
 
 import javax.enterprise.context.ApplicationScoped;
 
-/**
- * Created by johnament on 9/13/14.
- */
 @ApplicationScoped
 public class AppConfig implements PropertyFileConfig {
     @Override

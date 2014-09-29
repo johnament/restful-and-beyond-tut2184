@@ -38,8 +38,8 @@ John D. Ament
 * Allow for creation and read of courses - save it in a database!
 * Allow people to enroll for a course (free of charge!)
 * Don't allow new enrollment after 5 enrollees
-* Notify consumers of new courses available
-* Notify consumers when enrollment hits 5 for any course
+* Push notification of course availability
+* Push notification whenever a course fills up
 * We want to track all API requests
 
 [.topic.intro]
@@ -96,12 +96,6 @@ public class Startup {
     }
 }
 --
-
-[.topic.intro]
-== Servlets
-* The core of everything we do in the internet
-* Build a component for registration of Servlets, Filters, Listeners
-* Specifies basic components
 
 [.topic.intro]
 == Application Startup

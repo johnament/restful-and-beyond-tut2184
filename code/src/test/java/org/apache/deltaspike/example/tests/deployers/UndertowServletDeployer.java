@@ -20,6 +20,7 @@
 package org.apache.deltaspike.example.tests.deployers;
 
 import org.apache.deltaspike.core.api.config.ConfigProperty;
+import org.apache.deltaspike.example.components.servlet.RequestScopedServletRequestListener;
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.se.ApplicationStartupEvent;
 
@@ -56,7 +57,9 @@ public class UndertowServletDeployer {
     public void startUndertow(@Observes ApplicationStartupEvent applicationStartupEvent) {
         WebServlet webServlet = GreeterServlet.class.getAnnotation(WebServlet.class);
         undertowComponent = new UndertowComponent(undertowBindPort,undertowBindAddress,contextRoot,deploymentName)
-                .addServlet(webServlet,GreeterServlet.class).start();
+                .addServlet(webServlet,GreeterServlet.class)
+                .addListener(RequestScopedServletRequestListener.class)
+                .start();
     }
 
     @PreDestroy

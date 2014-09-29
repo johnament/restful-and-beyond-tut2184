@@ -31,4 +31,8 @@ public class RequestInvoker {
             session.getBasicRemote().sendText("foo "+data);
         } catch (IOException e) { }
     }
+
+    public String doWork() {
+        return "greetings";
+    }
 }

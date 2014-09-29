@@ -40,7 +40,7 @@ import java.util.Map;
  * A component for starting and stopping entity managers.
  */
 @ApplicationScoped
-//@Vetoed
+@Vetoed
 public class LongPersistence {
     private static final Logger logger = Logger.getLogger(LongPersistence.class);
     @Inject

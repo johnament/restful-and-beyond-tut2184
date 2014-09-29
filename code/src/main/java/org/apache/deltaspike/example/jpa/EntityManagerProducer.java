@@ -24,6 +24,8 @@ import org.apache.deltaspike.jpa.api.transaction.TransactionScoped;
 import org.apache.log4j.Logger;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.Initialized;
+import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Disposes;
 import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
@@ -37,6 +39,10 @@ public class EntityManagerProducer {
     private EntityManagerFactory entityManagerFactory;
 
     private final Logger logger = Logger.getLogger(EntityManagerProducer.class);
+
+    public void onStart(@Observes @Initialized(ApplicationScoped.class) Object obj) {
+
+    }
 
     @Produces
     @TransactionScoped

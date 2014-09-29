@@ -32,7 +32,8 @@ public class WebServletLiteral extends AnnotationLiteral<WebServlet> implements 
     private WebInitParam[] params;
     private boolean asyncSupported;
     private int loadOnStartup;
-    public WebServletLiteral(String name, String[] urlPatterns, WebInitParam[] params, boolean asyncSupported, int loadOnStartup) {
+    public WebServletLiteral(String name, String[] urlPatterns, WebInitParam[] params,
+                             boolean asyncSupported, int loadOnStartup) {
         this.name = name;
         this.urlPatterns = urlPatterns;
         this.params = params;

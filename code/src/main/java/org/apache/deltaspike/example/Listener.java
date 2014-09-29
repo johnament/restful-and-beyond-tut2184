@@ -24,6 +24,7 @@ import org.apache.deltaspike.example.components.servlet.RequestScopedServletRequ
 import org.apache.deltaspike.example.components.servlet.WebServletLiteral;
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
 import org.apache.deltaspike.example.rest.CourseApplication;
+import org.apache.deltaspike.example.security.UserManager;
 import org.apache.deltaspike.example.socket.CourseServer;
 import org.apache.log4j.Logger;
 import org.jboss.resteasy.cdi.CdiInjectorFactory;
@@ -58,6 +59,9 @@ public class Listener {
     @Inject
     @ConfigProperty(name="http.deployment.name")
     private String deploymentName;
+
+    @Inject
+    private UserManager userManager;
 
     private static final Logger logger = Logger.getLogger(Listener.class);
 

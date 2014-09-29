@@ -33,4 +33,7 @@ public interface EmployeeRepository extends EntityRepository<Employees,Integer> 
     @Query("select e from Employees e where lastName like :name")
     public List<Employees> findByname(@QueryParam("name") String name);
 
+    @Query(named="Foo.bar")
+    public List<Employees> findByNameNamed(@QueryParam("name") String name);
+
 }

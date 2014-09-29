@@ -43,6 +43,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 public class CourseCrudTest {
@@ -99,13 +100,14 @@ public class CourseCrudTest {
 
         Client client = ClientBuilder.newClient();
         WebTarget target = client.target("http://localhost:8787/courses/");
-        courseList.forEach(c -> target.request().post(Entity.entity(c, MediaType.APPLICATION_JSON_TYPE)).close());
+        courseList.forEach(c ->
+                target.request().post(Entity.entity(c, MediaType.APPLICATION_JSON_TYPE)).close());
 
         // when i get the list of courses back
         Response listResponse = target.request(MediaType.APPLICATION_JSON).get();
         Courses courses = listResponse.readEntity(Courses.class);
         listResponse.close();
-        Assert.assertTrue(courses.getCourses().size() >= courseList.size());
+        Assert.assertTrue(courses.getCourses().size() == 3);
     }
 
     @Test
@@ -113,48 +115,66 @@ public class CourseCrudTest {
         WebSocketContainer container = ContainerProvider.getWebSocketContainer();
         URI uri = URI.create("ws://localhost:8787/courseServer");
         Session session = container.connectToServer(CourseClient.class,uri);
-        session.setMaxIdleTimeout(50000);
+
+        session.setMaxIdleTimeout(4000);
         System.out.println("session "+session.getId());
         Client client = ClientBuilder.newClient();
         client.register(ResteasyJacksonProvider.class);
         WebTarget target = client.target("http://localhost:8787/courses/");
         Course c1 = new Course();
         c1.setName("Course c1");
+        String credential = "admin2:admin2";
+        String header = Base64.getEncoder().encodeToString(credential.getBytes("UTF-8"));
+        Response response = target.request().header("Authorization","Basic "+header)
+                .post(Entity.entity(c1, MediaType.APPLICATION_JSON_TYPE));
+        if (response.getStatus() == 200) {
+            Course result = response.readEntity(Course.class);
+            int courseId = result.getCourseId();
 
-        Response response = target.request().post(Entity.entity(c1, MediaType.APPLICATION_JSON_TYPE));
-        Course result = response.readEntity(Course.class);
-        int courseId = result.getCourseId();
-
-        System.out.println("Course : "+courseId);
-        response.close();
-
-        WebTarget newTarget = client.target("http://localhost:8787/courses/{courseId}/enrollments");
-        WebTarget testCreateId = newTarget.resolveTemplate("courseId", courseId);
-        for(int i = 0;i<6;i++) {
-            Enrollment enrollment = new Enrollment();
-            enrollment.setCourse(result);
-            enrollment.setName("John Doe"+i);
-            Response postResp = testCreateId.request().post(Entity.entity(enrollment, MediaType.APPLICATION_JSON));
-            int respCode = postResp.getStatus();
-            if(respCode == 500) {
-                String message = postResp.readEntity(String.class);
-                Assert.assertEquals("course.enrollments.full",message);
+            System.out.println("Course : "+courseId);
+            response.close();
+            String studentAuth = "student:student";
+            String studentHeader = Base64.getEncoder().encodeToString(studentAuth.getBytes("UTF-8"));
+            WebTarget newTarget = client.target("http://localhost:8787/courses/{courseId}/enrollments");
+            WebTarget testCreateId = newTarget.resolveTemplate("courseId", courseId);
+            for(int i = 0;i<6;i++) {
+                Enrollment enrollment = new Enrollment();
+                enrollment.setCourse(result);
+                enrollment.setName("John Doe"+i);
+                Response postResp = testCreateId.request().header("Authorization","Basic "+studentHeader)
+                        .post(Entity
+                        .entity(enrollment, MediaType.APPLICATION_JSON));
+                int respCode = postResp.getStatus();
+                if(respCode == 500) {
+                    String message = postResp.readEntity(String.class);
+                    Assert.assertEquals("course.enrollments.full",message);
+                }
+                else if(respCode == 401) {
+                    String message = postResp.readEntity(String.class);
+                    System.out.println("Failed to authenticate user "+message);
+                }
+                else {
+                    Assert.assertEquals(200,respCode);
+                }
+                postResp.close();
             }
-            else {
-                Assert.assertEquals(200,respCode);
-            }
-            postResp.close();
+
+            Response getListResp = testCreateId.request(MediaType.APPLICATION_JSON).get();
+            Enrollments enrollments = getListResp.readEntity(Enrollments.class);
+            Assert.assertEquals(5,enrollments.getEnrollmentList().size());
+            enrollments.getEnrollmentList().forEach(e -> System.out.println("name: "+e.getName()));
+            getListResp.close();
+
+            Thread.sleep(500);
+
+            System.out.println("pending messages "+CourseClient.getMessages());
+            CourseClient.getMessages().forEach(System.out::println);
         }
-
-        Response getListResp = testCreateId.request(MediaType.APPLICATION_JSON).get();
-        Enrollments enrollments = getListResp.readEntity(Enrollments.class);
-        Assert.assertEquals(5,enrollments.getEnrollmentList().size());
-        enrollments.getEnrollmentList().forEach(e -> System.out.println("name: "+e.getName()));
-        getListResp.close();
-
-        Thread.sleep(500);
-
-        System.out.println("pending messages "+CourseClient.getMessages());
-        CourseClient.getMessages().forEach(System.out::println);
+        else {
+            Assert.assertEquals("Got a 500",500,response.getStatus());
+            String entity = response.readEntity(String.class);
+            System.out.println(entity);
+        }
+        response.close();
     }
 }

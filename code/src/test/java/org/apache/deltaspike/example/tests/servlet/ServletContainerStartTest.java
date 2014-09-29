@@ -20,6 +20,7 @@
 package org.apache.deltaspike.example.tests.servlet;
 
 import org.apache.deltaspike.example.components.undertow.UndertowComponent;
+import org.apache.deltaspike.example.requestDelegate.RequestInvoker;
 import org.apache.deltaspike.example.tests.TestUtils;
 import org.apache.deltaspike.example.tests.conf.ExampleConfigSource;
 import org.apache.deltaspike.example.tests.deployers.GreeterServlet;
@@ -56,8 +57,10 @@ public class ServletContainerStartTest {
                 "</beans>";
 
         JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "se-examples.jar").addPackage(UndertowComponent.class.getPackage())
-                .addPackage(ExampleConfigSource.class.getPackage()).addPackage(GreeterServlet.class.getPackage())
-                .addAsManifestResource(new StringAsset(beansXml),"beans.xml");
+                .addPackage(ExampleConfigSource.class.getPackage())
+                .addPackage(GreeterServlet.class.getPackage())
+                .addClass(RequestInvoker.class)
+                .addAsManifestResource(new StringAsset(beansXml), "beans.xml");
         TestUtils.resolveListOfArchives("org.apache.deltaspike.core:deltaspike-core-api",
                 "org.apache.deltaspike.core:deltaspike-core-impl")
                 .forEach(jar::merge);
@@ -75,7 +78,7 @@ public class ServletContainerStartTest {
         try(InputStream is = url.openStream()) {
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
             String text = br.readLine();
-            Assert.assertEquals("written",text);
+            Assert.assertEquals("greetings",text);
             br.close();
         }
         deployer.shutdown();

@@ -37,7 +37,7 @@ public abstract class MongoDBDAO<T> {
 
     @PostConstruct
     public void init() {
-        Morphia morphia =  new Morphia();
+        Morphia morphia = new Morphia();
         morphia.map(APIHit.class);
         this.datastore = morphia.createDatastore(mongoClient,getDBName());
     }

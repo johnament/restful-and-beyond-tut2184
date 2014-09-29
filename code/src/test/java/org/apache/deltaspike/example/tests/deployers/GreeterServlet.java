@@ -32,10 +32,11 @@ import java.io.PrintWriter;
  */
 @WebServlet(urlPatterns={"/greet"},name = "Greeter")
 public class GreeterServlet extends HttpServlet {
+    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         PrintWriter out = resp.getWriter();
-        out.write("written");
+        out.write("greetings");
         out.close();
     }
 }

@@ -24,6 +24,7 @@ import org.apache.deltaspike.example.jpa.CourseRepository;
 import org.apache.deltaspike.example.jpa.Enrollment;
 import org.apache.deltaspike.example.jpa.EnrollmentRepository;
 import org.apache.deltaspike.example.security.CourseCreateBinding;
+import org.apache.deltaspike.example.security.StudentBinding;
 import org.apache.deltaspike.example.socket.ClientConnectionComponent;
 import org.apache.deltaspike.jpa.api.transaction.Transactional;
 
@@ -81,37 +82,39 @@ public class CourseRestAPI {
         return enrollments;
     }
 
-    @POST
-    @Path("/{courseId}/enrollments")
-    public Enrollment enroll(@PathParam("courseId") Integer courseId,
-                             Enrollment enrollment) {
-        Course course = courseRepository.findCourse(courseId);
-        enrollment.setCourse(course);
-        return this.enrollmentRepository.save(enrollment);
-    }
-
 //    @POST
 //    @Path("/{courseId}/enrollments")
 //    public Enrollment enroll(@PathParam("courseId") Integer courseId,
 //                             Enrollment enrollment) {
 //        Course course = courseRepository.findCourse(courseId);
-//        Set<ConstraintViolation<Course>> courseConstraints = validator.validate(course, Course.NewEnrollment.class);
-//        if(courseConstraints.isEmpty()) {
-//            enrollment.setCourse(course);
-//            if(course.getEnrollmentList().size() == 4) {
-//                String msg = String.format("Course %s has reached max enrollments",courseId);
-//                this.clientConnectionComponent.notifyAllSessions(msg);
-//            }
-//            return this.enrollmentRepository.save(enrollment);
-//        }
-//        else {
-//            StringBuilder messages = new StringBuilder();
-//            for(ConstraintViolation<Course> cv : courseConstraints) {
-//                messages.append(cv.getMessage());
-//            }
-//            throw new RuntimeException(messages.toString());
-//        }
+//        enrollment.setCourse(course);
+//        return this.enrollmentRepository.save(enrollment);
 //    }
+
+    @POST
+    @Path("/{courseId}/enrollments")
+    @StudentBinding
+    public Enrollment enroll(@PathParam("courseId") Integer courseId,
+                             Enrollment enrollment) {
+        Course course = courseRepository.findCourse(courseId);
+        Set<ConstraintViolation<Course>> courseConstraints =
+                validator.validate(course, Course.NewEnrollment.class);
+        if(courseConstraints.isEmpty()) {
+            enrollment.setCourse(course);
+            if(course.getEnrollmentList().size() == 4) {
+                String msg = String.format("Course %s has reached max enrollments",courseId);
+                this.clientConnectionComponent.notifyAllSessions(msg);
+            }
+            return this.enrollmentRepository.save(enrollment);
+        }
+        else {
+            StringBuilder messages = new StringBuilder();
+            for(ConstraintViolation<Course> cv : courseConstraints) {
+                messages.append(cv.getMessage());
+            }
+            throw new RuntimeException(messages.toString());
+        }
+    }
 
     @PUT
     @Path("/{courseId}")

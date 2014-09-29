@@ -44,12 +44,12 @@ public class ClientConnectionComponent {
     public void notifyAllSessions(String message) {
         System.out.println("Notifying all sessions "+message+" with contents "+sessionMap);
         sessionMap.forEach((s, session) -> {
-            try {
+//            try {
                 System.out.println("Sending to "+s);
-                session.getBasicRemote().sendText(message);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                session.getAsyncRemote().sendText(message);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         });
     }
 }
